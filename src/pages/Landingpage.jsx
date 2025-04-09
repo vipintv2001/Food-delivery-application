@@ -1,5 +1,6 @@
 import React from "react";
 import "./Landingpage.css";
+import { Link } from "react-router-dom";
 
 function Landingpage() {
   return (
@@ -12,12 +13,18 @@ function Landingpage() {
           </div>
           <div className="buttons d-flex gap-2">
             <div>
-              <h5 className="signupbutton text-light fw-bold me-3">Sign Up</h5>
+              <Link to={"/register"} style={{ textDecoration: "none" }}>
+                <h5 className="signupbutton text-light fw-bold me-3">
+                  Sign Up
+                </h5>
+              </Link>
             </div>
             <div>
-              <button className="loginbutton btn btn-primary me-4">
-                LOG IN
-              </button>
+              <Link to={"/login"}>
+                <button className="loginbutton btn btn-primary me-4">
+                  LOG IN
+                </button>
+              </Link>
             </div>
           </div>
         </nav>
@@ -32,9 +39,11 @@ function Landingpage() {
             <br />
             delivered fresh and fast with TastyFood
           </h5>
-          <button className="btn btn-primary px-3 py-3 mt-2 fs-5 fw-bolder">
-            GET STARTED <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          <Link to={"/home"}>
+            <button className="btn btn-success px-3 py-3 mt-2 fs-5 fw-bolder">
+              GET STARTED <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </Link>
         </div>
       </div>
     </>

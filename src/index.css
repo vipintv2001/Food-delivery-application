@@ -4,3 +4,19 @@
   box-sizing: border-box;
   font-family: "Lato", sans-serif;
 }
+
+.registerbg {
+  background-image: url(./assets/fastfood.png);
+  height: 100%;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.brandname {
+  font-family: "Underdog", system-ui;
+  font-weight: bolder;
+  color: goldenrod;
+  font-size: 48px;
+}
