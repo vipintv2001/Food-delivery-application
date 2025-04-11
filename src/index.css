@@ -5,6 +5,10 @@
   font-family: "Lato", sans-serif;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 .registerbg {
   background-image: url(./assets/fastfood.png);
   height: 100%;
@@ -18,5 +22,25 @@
   font-family: "Underdog", system-ui;
   font-weight: bolder;
   color: goldenrod;
-  font-size: 48px;
+  font-size: 36px;
+}
+
+.foodsection {
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.foodcard {
+  transition: all 0.3s ease-out;
+}
+
+.foodcard:hover {
+  transform: scale(1.03);
+}
+
+.foodtags {
+  font-size: 18px;
+  background-color: rgba(131, 138, 138, 0.892);
+  padding: 2px 5px;
+  border-radius: 6px;
 }

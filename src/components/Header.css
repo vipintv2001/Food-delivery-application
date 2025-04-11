@@ -1,0 +1,81 @@
+/* .buttons {
+  margin-top: 8px;
+  margin-right: 18px;
+} */
+
+.loginbutton {
+  padding: 8px 26px;
+  font-size: 18px;
+  font-weight: 900;
+  border-radius: 12px;
+}
+
+.signupbutton {
+  /* margin-top: 12px; */
+  transition: all 0.5s ease-in;
+}
+
+.navlinks {
+  padding: 3px 6px;
+  border-radius: 20px;
+  transition: all 0.3s ease-in;
+}
+
+.navlinks:hover {
+  background-color: rgba(255, 0, 0, 0.721);
+  transform: scale(1.1);
+}
+
+.cartlink {
+  color: white;
+  transition: all 0.3s ease-in;
+}
+
+.cartlink:hover {
+  color: red;
+  transform: scale(1.1);
+}
+
+.signupbutton:hover {
+  transform: scale(1.1);
+}
+
+.nav-item {
+  font-size: 24px;
+  font-weight: bolder;
+}
+
+/* .navbar-links {
+  margin-left: 10px;
+  gap: 40px;
+} */
+
+.custom-navbar {
+  transition: background-color 0.3s ease;
+  background-color: rgb(118, 114, 114);
+  padding-top: 0px;
+  padding-left: 8px;
+  z-index: 999;
+  pointer-events: auto;
+  margin-left: -12px;
+  margin-top: -36px;
+}
+
+.navbar-scrolled {
+  background-color: rgb(118, 114, 114);
+}
+
+@media (max-width: 991.98px) {
+  .mobile-navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #2f3133;
+    z-index: 999;
+    padding: 1rem;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+}

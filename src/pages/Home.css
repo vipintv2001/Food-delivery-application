@@ -1,0 +1,39 @@
+.homebanner {
+  background-image: url(../assets/landingpageImg.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.homebanner * {
+  position: relative;
+  z-index: 2; /* Make sure buttons/text come above the image layer */
+}
+
+.homebanner .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+.banner-content {
+  position: absolute;
+  z-index: 2;
+}
+
+.banner_content h1 {
+  font-size: 80px;
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+}

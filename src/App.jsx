@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Landingpage from "./pages/Landingpage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Fooditem from "./pages/Fooditem";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>}/>
+        <Route path="/fooditem" element={<Fooditem/>}/>
       </Routes>
       {/* <Footer /> */}
     </>
