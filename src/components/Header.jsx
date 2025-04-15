@@ -84,12 +84,14 @@ function Header() {
                 </Link>
               </li> */}
               <li className="nav-item">
-                <h4>
-                  <i
-                    className="fa-solid fa-cart-shopping fs-3 me-4 cartlink"
-                    style={{ marginTop: "14px" }}
-                  ></i>
-                </h4>
+                <Link to={"/cart"}>
+                  <h4>
+                    <i
+                      className="fa-solid fa-cart-shopping fs-3 me-4 cartlink"
+                      style={{ marginTop: "14px" }}
+                    ></i>
+                  </h4>
+                </Link>
               </li>
               <li className="nav-item">
                 <Link to={"/login"}>

@@ -32,7 +32,7 @@ function Home() {
         </div>
       </div>
       <main>
-        <section className="">
+        <section id="foodsection">
           <Foodsection />
         </section>
       </main>

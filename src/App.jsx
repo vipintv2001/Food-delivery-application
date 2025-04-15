@@ -7,6 +7,8 @@ import Landingpage from "./pages/Landingpage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Fooditem from "./pages/Fooditem";
+import Cart from "./pages/Cart";
+import Order from "./pages/Order";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>}/>
         <Route path="/fooditem" element={<Fooditem/>}/>
+        <Route path="/cart" element={<Cart/>}/>
+        <Route path="/orders" element={<Order/>}/>
       </Routes>
       {/* <Footer /> */}
     </>
