@@ -1,0 +1,97 @@
+/* Main Sidebar Styles */
+.sidebar {
+  width: 22rem;
+  min-height: 100vh; /* Changed from height to min-height */
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #343a40; /* Dark background */
+  color: white;
+  z-index: 1030;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px; /* Prevents content from touching footer */
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 1rem;
+  background-color: #343a40; /* Match sidebar color */
+  position: sticky;
+  bottom: 0;
+}
+
+/* Menu Items */
+.sidebar_items {
+  transition: all 0.3s ease-in;
+  font-size: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  margin: 0.25rem 0;
+  border-radius: 4px;
+}
+
+.custom_hr {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 90%;
+  margin: 1rem auto;
+}
+
+/* User Dropdown */
+.activity_box {
+  position: absolute;
+  bottom: 100%;
+  right: 1rem;
+  background-color: #495057;
+  list-style: none;
+  padding: 0.5rem 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  min-width: 150px;
+}
+
+.activity_box li {
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.activity_box li:hover {
+  background-color: #6c757d;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 767.98px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    min-height: auto;
+    max-height: 80vh;
+  }
+
+  .sidebar-footer {
+    position: relative;
+  }
+}
+
+/* Toggle Button */
+.btn-sidebar-toggle {
+  z-index: 1040;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
+
+@media (min-width: 768px) {
+  .sidebar-footer {
+    margin-top: 360px;
+    margin-left: 30px;
+  }
+}
+
+.active-item{
+  background-color: green;
+}

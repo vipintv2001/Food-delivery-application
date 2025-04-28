@@ -1,0 +1,108 @@
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 0;
+  margin-top: 50px;
+}
+
+@media (min-width: 768px) {
+  .content {
+    margin-left: 22rem;
+    margin-top: 0px;
+  }
+}
+
+.sidebar {
+  width: 22rem;
+  background-color: #f8f9fa;
+  overflow-y: auto;
+  z-index: 1030;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: auto;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .sidebar.show {
+    max-height: 100vh;
+  }
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.input-icon-wrapper input {
+  padding-left: 2rem; /* space for the icon */
+}
+
+.input-icon-wrapper .icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.delivery-status {
+  background-color: red;
+  margin: 20px;
+  border-radius: 10px;
+}
+
+.status-compact {
+  font-size: 16px;
+  padding: 2px 3px;
+  height: 28px;
+
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background-color: #1e5a66;
+  color: #100f0f;
+  cursor: pointer;
+
+  /* Keeps default arrow — no custom background image */
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+
+  /* Optional: remove padding on the right if needed */
+  padding-right: 6px;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.card .form-control,
+.card .form-select {
+  border-radius: 0.5rem;
+}
+
+
+.custom-col {
+  flex: 0 0 20%;
+  max-width: 20%;
+}

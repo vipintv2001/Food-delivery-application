@@ -7,7 +7,7 @@ function Login() {
     <>
       <div className="container-fluid">
         <div className="row">
-          <div className="col-6 d-flex align-items-center justify-content-center flex-column">
+          <div className="col-lg-6 col-md-6 col-sm-12 d-flex align-items-center justify-content-center flex-column mb-3 mt-4">
             <div className="d-flex align-items-center justify-content-center flex-column">
               <h2 className="brandname text-center">TastyFood</h2>
               <h1 className="text-danger mt-3 fw-bolder">Log In</h1>
@@ -32,8 +32,11 @@ function Login() {
                 </button>
               </Link>
             </div>
+            <p className="mt-2">
+              New user? click here to <Link to={"/register"}>Signup</Link>
+            </p>
           </div>
-          <div className="col-6 p-0">
+          <div className="col-lg-6 col-md-6 col-sm-12 p-0">
             <img src={foodimg} alt="" width={"100%"} height={"100%"} />
           </div>
         </div>

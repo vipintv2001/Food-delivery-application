@@ -1,5 +1,5 @@
 .homebanner {
-  background-image: url(../assets/landingpageImg.png);
+  background-image: url(../assets/homeicon.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -35,5 +35,13 @@
 
 .header {
   position: relative;
-  z-index: 2;
+  z-index: 999;
+}
+
+.homebanner .header .custom-navbar {
+  background-color: rgba(240, 248, 255, 0);
+}
+
+.homebanner .header .navbar-scrolled {
+  background-color: rgb(118, 114, 114);
 }

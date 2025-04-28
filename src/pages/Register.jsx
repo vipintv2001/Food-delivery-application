@@ -7,10 +7,10 @@ function Register() {
     <>
       <div className="container-fluid">
         <div className="row">
-          <div className="col-6 p-0">
+          <div className="col-lg-6 col-md-6 col-sm-12 p-0">
             <img src={foodimg} alt="" width={"100%"} height={"100%"} />
           </div>
-          <div className="col-6 d-flex align-items-center justify-content-center flex-column">
+          <div className="col-lg-6 col-md-6 col-sm-12 d-flex align-items-center justify-content-center flex-column">
             <div className="d-flex align-items-center justify-content-center flex-column">
               <h2 className="brandname text-center">TastyFood</h2>
               <h1 className="text-danger mt-3 fw-bolder">Sign Up</h1>
@@ -51,6 +51,9 @@ function Register() {
                 </button>
               </Link>
             </div>
+            <p className="mt-2">
+              Already have an Account? <Link to={'/login'}>Login</Link>
+            </p>
           </div>
         </div>
       </div>
