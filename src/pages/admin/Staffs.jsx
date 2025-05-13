@@ -1,13 +1,14 @@
 import React from "react";
 import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
+import AddStaffButton from "../../components/AddStaffButton";
 
 function Staffs() {
   return (
     <>
       <div className="dashboard">
         <Sidebar />
-        <div className="content">
+        <div className="content content-bg">
           <div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center">
               <h3 className="my-4 fw-bolder">Staffs Details</h3>
@@ -20,10 +21,14 @@ function Staffs() {
                 />
               </div>
             </div>
+            <div className="mb-4 mt-3 me-4 d-flex justify-content-end">
+              <AddStaffButton />
+            </div>
+
             <div class="table-responsive">
               <table class="table table-bordered table-striped table-hover text-center align-middle">
                 <thead class="table-primary text-uppercase">
-                  <tr>
+                  <tr className="table-dark">
                     <th>
                       <i class="bi bi-hash"></i> Sl.No
                     </th>

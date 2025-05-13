@@ -10,6 +10,10 @@
   margin-top: 50px;
 }
 
+.content-bg {
+  background: linear-gradient(to right, #f8f9fa, #dee2e6);
+}
+
 @media (min-width: 768px) {
   .content {
     margin-left: 22rem;
@@ -101,8 +105,16 @@
   border-radius: 0.5rem;
 }
 
-
 .custom-col {
   flex: 0 0 20%;
   max-width: 20%;
+}
+
+.card-title {
+  font-size: 1.2rem;
+}
+
+.card-text.display-6 {
+  font-size: 2.5rem;
+  font-weight: bold;
 }

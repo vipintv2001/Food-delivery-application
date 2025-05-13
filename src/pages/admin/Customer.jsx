@@ -7,7 +7,7 @@ function Customer() {
     <>
       <div className="dashboard">
         <Sidebar />
-        <div className="content">
+        <div className="content content-bg">
           <div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center">
               <h3 className="my-4 fw-bolder">Customer Details</h3>
@@ -23,11 +23,21 @@ function Customer() {
             <table className="table table-bordered table-striped table-hover text-center">
               <thead>
                 <tr className="table-dark">
-                  <th>Sl.No</th>
-                  <th>Customer Id</th>
-                  <th>Name</th>
-                  <th>Phone Number</th>
-                  <th>Email</th>
+                  <th>
+                    <i class="bi bi-hash me-1"></i> Sl.No
+                  </th>
+                  <th>
+                    <i class="bi bi-person-badge-fill me-2"></i>Customer Id
+                  </th>
+                  <th>
+                    <i class="bi bi-person-fill me-2"></i>Name
+                  </th>
+                  <th>
+                    <i class="bi bi-telephone-fill me-2"></i>Phone Number
+                  </th>
+                  <th>
+                    <i class="bi bi-envelope-fill me-2"></i>Email
+                  </th>
                 </tr>
               </thead>
               <tbody className="fs-5">

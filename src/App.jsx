@@ -6,19 +6,24 @@ import Home from "./pages/Home";
 import Landingpage from "./pages/Landingpage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Fooditem from "./pages/Fooditem";
 import Cart from "./pages/Cart";
 import Address from "./pages/Address";
 import Orders from "./pages/Orders";
 import Admindashboard from "./pages/admin/Admindashboard";
 import Trackorder from "./pages/admin/Trackorder";
-import Viewitems from "./pages/admin/Viewitems";
-import Additems from "./pages/admin/Additems";
+import Viewitems from "./pages/restaurent/Viewitems";
 import Staffs from "./pages/admin/Staffs";
 import Customer from "./pages/admin/Customer";
 import Profile from "./pages/Profile";
 import Staffdashboard from "./pages/staff/Staffdashboard";
-import Edititems from "./pages/admin/Edititems";
+import Stafforders from "./pages/staff/Orders";
+import Myorders from "./pages/staff/Myorders";
+import AboutRestaurant from "./pages/AboutRestaurent";
+import Payment from "./pages/Payment";
+import RestaurentDashboard from "./pages/restaurent/RestaurentDashboard";
+import AddRestaurent from "./pages/admin/AddRestaurent";
+import Additems from "./pages/restaurent/Additems";
+import RestaurentOrder from "./pages/restaurent/RestaurentOrder";
 
 function App() {
   return (
@@ -29,19 +34,24 @@ function App() {
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/fooditem" element={<Fooditem />} />
+        <Route path="/restaurent" element={<AboutRestaurant />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/addressdetails" element={<Address />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/payment" element={<Payment />} />
         <Route path="/admindashboard" element={<Admindashboard />} />
         <Route path="/admindashboard/orders" element={<Trackorder />} />
-        <Route path="/admindashboard/viewitems" element={<Viewitems />} />
-        <Route path="/admindashboard/additems" element={<Additems/>} />
-        <Route path="/admindashboard/staffs" element={<Staffs/>} />
-        <Route path="/admindashboard/customer" element={<Customer/>} />
-        <Route path="/profile" element={<Profile/>} />
-        <Route path="/staffdashboard" element={<Staffdashboard/>} /> 
-        <Route path="/admindashboard/edititems" element={<Edititems/>} />
+        <Route path="/admindashboard/addrestaurent" element={<AddRestaurent />} />
+        <Route path="/admindashboard/staffs" element={<Staffs />} />
+        <Route path="/admindashboard/customer" element={<Customer />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/staffdashboard" element={<Staffdashboard />} />
+        <Route path="/staffdashboard/orders" element={<Stafforders />} />
+        <Route path="/staffdashboard/myorders" element={<Myorders />} />
+        <Route path="/restaurentdashboard" element={<RestaurentDashboard />} />
+        <Route path="/restaurentdashboard/viewitems" element={<Viewitems />} />
+        <Route path="/restaurentdashboard/additems" element={<Additems />} />
+        <Route path="/restaurentdashboard/orders" element={<RestaurentOrder/>}/>
       </Routes>
       {/* <Footer /> */}
     </>

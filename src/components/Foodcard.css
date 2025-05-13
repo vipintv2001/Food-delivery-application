@@ -1,0 +1,59 @@
+.image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.foodcard-image {
+  width: 100%;
+  height: auto;
+  transition: filter 0.3s ease;
+}
+
+/* .foodcard-image.blurred {
+  filter: blur(1px) brightness(0.7);
+} */
+
+
+.custom-cart-btn {
+  background-color: #ff5722;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  border-radius: 50px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.custom-cart-btn:hover {
+  background-color: #e64a19;
+  transform: scale(1.05);
+}
+
+.overlay-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(1px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

@@ -86,7 +86,7 @@ function Staffsidebar() {
               className="rounded-circle me-3"
             />
             <h5 className="m-0">
-              user1{" "}
+              Staff 1{" "}
               <i
                 className={`fa-solid fa-angle-down ms-1 ${
                   isDropdownOpen ? "rotate-180" : ""

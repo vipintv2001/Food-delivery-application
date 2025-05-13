@@ -32,16 +32,19 @@
 .banner_content h1 {
   font-size: 80px;
 }
-
 .header {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 999;
+  transition: background-color 0.3s ease;
 }
 
 .homebanner .header .custom-navbar {
   background-color: rgba(240, 248, 255, 0);
 }
 
-.homebanner .header .navbar-scrolled {
-  background-color: rgb(118, 114, 114);
+.homebanner .header.navbar-scrolled .custom-navbar {
+  background-color: #10101a;
 }

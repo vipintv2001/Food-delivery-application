@@ -1,42 +1,52 @@
-import React from "react";
+import React, { use } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import Editfooditem from "./Editfooditem";
 
-function Adminfoodcard() {
-  const [show, setShow] = useState(false);
+function Adminfoodcard({food}) {
+  const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleEditClose = () => setShowEdit(false);
+  const handleEditShow = () => setShowEdit(true);
+
+  const handleDeleteClose = () => setShowDelete(false);
+  const handleDeleteShow = () => setShowDelete(true);
+
   return (
     <>
       <div>
         <Card style={{ width: "16rem" }} className="foodcard shadow mt-3">
           <Card.Img
             variant="top"
-            src="https://www.yummytummyaarthi.com/wp-content/uploads/2023/03/chilli-chicken-dry-1.jpeg"
+            src={food.img}
             width={"100%"}
+            style={{ height: "11rem" }}
           />
           <Card.Body>
             <Card.Title className="fs-4 fw-bolder text-center mb-3">
-              Chilly Chicken
+              {food.name}
             </Card.Title>
             <div className="d-flex justify-content-evenly">
-              <Link to={"/admindashboard/edititems"}>
-                <button className="btn btn-primary">
-                  <i class="bi bi-pencil-square me-1"></i>Edit
-                </button>
-              </Link>
-              <button className="btn btn-danger" onClick={handleShow}>
+              <button className="btn btn-primary" onClick={handleEditShow}>
+                <i class="bi bi-pencil-square me-1"></i>Edit
+              </button>
+              <button className="btn btn-danger" onClick={handleDeleteShow}>
                 <i className="bi bi-trash me-1"></i>Delete
               </button>
             </div>
           </Card.Body>
         </Card>
       </div>
-      <Modal show={show} onHide={handleClose} centered backdrop="static">
+      <Modal
+        show={showDelete}
+        onHide={handleDeleteClose}
+        centered
+        backdrop="static"
+      >
         <Modal.Header closeButton className="border-0">
           <Modal.Title className="d-flex align-items-center gap-2">
             Confirm Deletion
@@ -54,20 +64,21 @@ function Adminfoodcard() {
         <Modal.Footer className="justify-content-center border-0">
           <Button
             variant="outline-secondary"
-            onClick={handleClose}
+            onClick={handleDeleteClose}
             className="px-4 rounded-pill"
           >
             Cancel
           </Button>
           <Button
             variant="danger"
-            onClick={handleClose}
+            onClick={handleDeleteClose}
             className="px-4 rounded-pill"
           >
             Delete
           </Button>
         </Modal.Footer>
       </Modal>
+      <Editfooditem show={showEdit} handleClose={handleEditClose} />
     </>
   );
 }

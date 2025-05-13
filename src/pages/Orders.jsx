@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Orders() {
+  useEffect(() => {
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      new window.bootstrap.Tooltip(tooltipTriggerEl); // Initialize Bootstrap tooltip
+    });
+  }, []);
   return (
     <>
       <div className="container-fluid bg-light min-vh-100 py-5">
@@ -18,6 +27,7 @@ function Orders() {
                   <tr>
                     <th>Order Id</th>
                     <th>Date</th>
+                    <th>Products</th>
                     <th>Product Price</th>
                     <th>Payment Status</th>
                     <th>Delivery Status</th>
@@ -28,6 +38,20 @@ function Orders() {
                   <tr>
                     <td>112</td>
                     <td>16/04/2025</td>
+                    <td>
+                      <div
+                        data-bs-toggle="tooltip"
+                        title="1x Cheese Burger, 2x Alfarm, 2x Chicken Shawarma, 1x Mayonnaise"
+                        style={{
+                          fontSize: "1.2rem",
+                          padding: "10px 15px",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        <i className="bi bi-info-circle me-1 text-primary"></i>6
+                        items
+                      </div>
+                    </td>
                     <td>₹734</td>
                     <td>
                       <span className="badge bg-warning text-dark">
@@ -59,6 +83,7 @@ function Orders() {
                   <tr>
                     <th>Order Id</th>
                     <th>Date</th>
+                    <th>Products</th>
                     <th>Product Price</th>
                     <th>Payment Status</th>
                     <th>Delivery Status</th>
@@ -68,6 +93,20 @@ function Orders() {
                   <tr>
                     <td>108</td>
                     <td>12/04/2025</td>
+                    <td>
+                      <div
+                        data-bs-toggle="tooltip"
+                        title="2 x Alfarm"
+                        style={{
+                          fontSize: "1.2rem",
+                          padding: "10px 15px",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        <i className="bi bi-info-circle me-1 text-primary"></i>2
+                        items
+                      </div>
+                    </td>
                     <td>₹7343</td>
                     <td>
                       <span className="badge bg-success">Paid</span>
@@ -79,6 +118,20 @@ function Orders() {
                   <tr>
                     <td>103</td>
                     <td>03/04/2025</td>
+                    <td>
+                      <div
+                        data-bs-toggle="tooltip"
+                        title="2 x Alfarm"
+                        style={{
+                          fontSize: "1.2rem",
+                          padding: "10px 15px",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        <i className="bi bi-info-circle me-1 text-primary"></i>2
+                        items
+                      </div>
+                    </td>
                     <td>₹343</td>
                     <td>
                       <span className="badge bg-success">Paid</span>
@@ -90,6 +143,20 @@ function Orders() {
                   <tr>
                     <td>93</td>
                     <td>23/03/2025</td>
+                    <td>
+                      <div
+                        data-bs-toggle="tooltip"
+                        title="2 x Alfarm"
+                        style={{
+                          fontSize: "1.2rem",
+                          padding: "10px 15px",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        <i className="bi bi-info-circle me-1 text-primary"></i>2
+                        items
+                      </div>
+                    </td>
                     <td>₹313</td>
                     <td>
                       <span className="badge bg-danger text-white">
@@ -108,6 +175,7 @@ function Orders() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

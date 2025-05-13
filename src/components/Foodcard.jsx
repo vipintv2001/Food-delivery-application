@@ -1,35 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import "./Foodcard.css"; // We'll use this for styling
 
-function Foodcard() {
+function Foodcard({ foodItem }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+  const handleTouchStart = () => setIsHovered((prev) => !prev); 
+
+  const productPrice = foodItem.price;
+  const discount = foodItem.discount;
+  const discountedPrice = Math.floor(productPrice - (productPrice*discount/100));
+
   return (
-    <>
-      <div>
-        <Card style={{ width: "26rem" }} className="foodcard shadow mt-3">
+    <div
+      className="foodcard-wrapper"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+    >
+      <Card style={{ width: "26rem" }} className="shadow mt-3 mb-3 foodcard">
+        <div className="image-container position-relative">
           <Card.Img
             variant="top"
-            src="https://img.freepik.com/free-photo/still-life-delicious-american-hamburger_23-2149637318.jpg?semt=ais_country_boost&w=740"
-            width={"100%"}
+            src={foodItem.img}
+            className={`foodcard-image ${isHovered ? "blurred" : ""}`}
+            style={{ height: "19rem" }}
           />
-          <Card.Body>
-            <div className="d-flex justify-content-between">
-              <Card.Title className="fs-4 fw-bolder">Cheese Burger</Card.Title>
-              <h4>
-                <i class="fa-solid fa-star text-warning"></i>
-                <i class="fa-solid fa-star text-warning"></i>
-                <i class="fa-solid fa-star text-warning"></i>
-                <i class="fa-solid fa-star text-warning"></i>
-                <i class="fa-solid fa-star text-warning"></i>
-              </h4>
+          {isHovered && (
+            <div className="overlay-button d-flex justify-content-center align-items-center">
+              <Button className="custom-cart-btn">
+                <i className="fa-solid fa-cart-plus me-2"></i>Add to Cart
+              </Button>
             </div>
-            <Card.Text>
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </Card.Text>
-            <div>
-              <h4 className="fw-bolder" style={{ fontFamily: "Poppins" }}>
-                &#8377; 120{" "}
+          )}
+        </div>
+        <Card.Body>
+          <div className="d-flex justify-content-between">
+            <Card.Title className="fs-4 fw-bolder">{foodItem.name}</Card.Title>
+            <h4>
+              {[...Array(5)].map((_, i) => (
+                <i key={i} className="fa-solid fa-star text-warning"></i>
+              ))}
+            </h4>
+          </div>
+          <Card.Text>
+            Some quick example text to build on the card title and make up the
+            bulk of the card's content.
+          </Card.Text>
+          <div>
+            <h4 className="fw-bolder" style={{ fontFamily: "Poppins" }}>
+              ₹{discountedPrice}{" "}
+              {discount > 0 && (
                 <span
                   className="me-1"
                   style={{
@@ -38,18 +62,19 @@ function Foodcard() {
                     fontSize: "20px",
                   }}
                 >
-                  140
+                  ₹{foodItem.price}
                 </span>
+              )}
+              {discount > 0 && (
                 <span style={{ fontWeight: "600", fontSize: "18px" }}>
-                  (25% off)
+                  ({foodItem.discount}% off)
                 </span>
-              </h4>
-            </div>
-            {/* <Button variant="primary">Go somewhere</Button> */}
-          </Card.Body>
-        </Card>
-      </div>
-    </>
+              )}
+            </h4>
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
   );
 }
 

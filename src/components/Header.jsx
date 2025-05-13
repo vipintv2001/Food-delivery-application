@@ -48,8 +48,8 @@ function Header() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/menu" className="navlinks nav-link">
-                Menu
+              <Link to="/home#restaurent" className="navlinks nav-link">
+                Restaurents
               </Link>
             </li>
             <li className="nav-item">

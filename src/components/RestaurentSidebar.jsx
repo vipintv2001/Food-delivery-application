@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Sidebar.css";
 import { Link, useLocation } from "react-router-dom";
 
-function Sidebar() {
+function RestaurentSidebar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState("home");
 
@@ -30,79 +30,69 @@ function Sidebar() {
       <div className="collapse d-md-block sidebar" id="sidebarMenu">
         <div className="sidebar-content">
           <h3 className="fw-bolder pt-4 ps-3 pb-2 text-center">
-            Admin Dashboard
+            Restaurent Dashboard
           </h3>
           <hr className="custom_hr mb-2" />
           <div className="px-4 links">
             <Link
-              to={"/admindashboard"}
+              to={"/restaurentdashboard"}
               style={{ textDecoration: "none", color: "white" }}
             >
               <h5
                 className={`sidebar_items ${
-                  currentPath === "/admindashboard" ? "active-item" : ""
+                  currentPath === "/restaurentdashboard" ? "active-item" : ""
                 }`}
               >
                 <i className="fa-solid fa-house me-2"></i> Home
               </h5>
             </Link>
             <Link
-              to={"/admindashboard/addrestaurent"}
+              to={"/restaurentdashboard/viewitems"}
               style={{ textDecoration: "none", color: "white" }}
             >
               <h5
                 className={`sidebar_items ${
-                  currentPath === "/admindashboard/addrestaurent"
+                  currentPath === "/restaurentdashboard/viewitems"
                     ? "active-item"
                     : ""
                 }`}
               >
-                <i className="fa-solid fa-plus me-2"></i> Add Restaurent
+                <i className="fa-solid fa-bowl-food me-2"></i> Food Items
               </h5>
             </Link>
             <Link
-              to={"/admindashboard/orders"}
+              to={"/restaurentdashboard/additems"}
               style={{ textDecoration: "none", color: "white" }}
             >
               <h5
                 className={`sidebar_items ${
-                  currentPath === "/admindashboard/orders" ? "active-item" : ""
-                }`}
-              >
-                <i class="bi bi-calendar me-2"></i> Orders
-              </h5>
-            </Link>
-            <Link
-              to={"/admindashboard/staffs"}
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              <h5
-                className={`sidebar_items ${
-                  currentPath === "/admindashboard/staffs" ? "active-item" : ""
-                }`}
-              >
-                <i class="bi bi-person-vcard-fill me-2"></i> Staffs
-              </h5>
-            </Link>
-            <Link
-              to={"/admindashboard/customer"}
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              <h5
-                className={`sidebar_items ${
-                  currentPath === "/admindashboard/customer"
+                  currentPath === "/restaurentdashboard/additems"
                     ? "active-item"
                     : ""
                 }`}
               >
-                <i class="bi bi-person me-2"></i> Customer
+                <i className="fa-solid fa-plus me-2"></i> Add Items
+              </h5>
+            </Link>
+            <Link
+              to={"/restaurentdashboard/orders"}
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              <h5
+                className={`sidebar_items ${
+                  currentPath === "/restaurentdashboard/orders"
+                    ? "active-item"
+                    : ""
+                }`}
+              >
+                <i class="bi bi-calendar-event me-2"></i> Orders
               </h5>
             </Link>
           </div>
         </div>
 
-        <div className="sidebar-footer" style={{ marginTop: "400px" }}>
-          <hr className="custom_hr mb-4" />
+        <div className="sidebar-footer" style={{ marginTop: "470px" }}>
+          <hr className="custom_hr" />
           <div className="d-flex align-items-center position-relative">
             <img
               src="https://static.vecteezy.com/system/resources/previews/000/439/863/non_2x/vector-users-icon.jpg"
@@ -112,7 +102,7 @@ function Sidebar() {
               className="rounded-circle me-3"
             />
             <h5 className="m-0">
-              Admin1{" "}
+              Delight Hotel{" "}
               <i
                 className={`fa-solid fa-angle-down ms-1 ${
                   isDropdownOpen ? "rotate-180" : ""
@@ -144,4 +134,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default RestaurentSidebar;
