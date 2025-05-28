@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RestaurentSidebar from "../../components/RestaurentSidebar";
 
 function RestaurentDashboard() {
+  const [restaurentName, setRestaurentName] = useState("");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("existingUser")) {
+      setRestaurentName(
+        JSON.parse(sessionStorage.getItem("existingUser")).restaurentName
+      );
+    }
+  });
   return (
     <>
       <div className="dashboard">
@@ -14,7 +23,7 @@ function RestaurentDashboard() {
             }}
           >
             <div className="mb-4">
-              <h2 className="fw-bold text-dark">Welcome, Delight Hotel</h2>
+              <h2 className="fw-bold text-dark">Welcome, {restaurentName}</h2>
               <p className="text-muted">
                 Here's a quick snapshot of today's activity at your restaurant.
               </p>

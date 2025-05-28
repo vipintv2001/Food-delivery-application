@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 
-function RestaurentCard() {
+function RestaurentCard({ restaurent }) {
   const rating = 4;
 
   return (
@@ -16,7 +16,7 @@ function RestaurentCard() {
     >
       <Card.Img
         variant="top"
-        src="https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudHxlbnwwfHwwfHx8MA%3D%3D"
+        src={restaurent.restaurentImage}
         style={{
           height: "260px", // increased from 200px
           objectFit: "cover",
@@ -28,7 +28,7 @@ function RestaurentCard() {
         <div>
           <div className="d-flex justify-content-between align-items-center mb-2">
             <Card.Title className="fs-5 fw-bold text-dark mb-0">
-              Delight Hotel
+              {restaurent.restaurentName}
             </Card.Title>
             <div>
               {[...Array(5)].map((_, i) => (
@@ -43,19 +43,31 @@ function RestaurentCard() {
             </div>
           </div>
           <Card.Text className="text-secondary" style={{ fontSize: "0.9rem" }}>
-            Authentic Indian, Arabian, and Chinese dishes served fresh and hot.
+            {/* Authentic Indian, Arabian, and Chinese dishes served fresh and hot. */}
+            {restaurent.cardDescription}
+          </Card.Text>
+          <Card.Text className="text-secondary" style={{ fontSize: "0.9rem" }}>
+            Location:{restaurent.location}
           </Card.Text>
         </div>
 
         <div className="d-flex justify-content-between align-items-end mt-3">
           <div>
-            <span className="badge bg-light text-dark border me-1">Indian</span>
-            <span className="badge bg-light text-dark border me-1">
-              Arabian
-            </span>
-            <span className="badge bg-light text-dark border">Chinese</span>
+            {restaurent.categories.map((item) => (
+              <span className="badge bg-light text-dark border me-1">
+                {item}
+              </span>
+            ))}
           </div>
-          <span className="badge bg-danger text-white">Non-Veg</span>
+          <div>
+            {restaurent.foodTypes.map((item) =>
+              item === "veg" ? (
+                <span className="badge bg-success text-white me-1">{item}</span>
+              ) : (
+                <span className="badge bg-danger text-white me-1">{item}</span>
+              )
+            )}
+          </div>
         </div>
       </Card.Body>
     </Card>

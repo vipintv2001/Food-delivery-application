@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import AddressSelector from "../components/AddressSelector"; // Component with modal map selector
+import AddressSelector from "../components/AddressSelector";
 import Footer from "../components/Footer";
 import SuccessModal from "../components/SuccessModal";
+import { getUserDetailsApi, setOrderApi } from "../services/allApi";
+import { toast } from "react-toastify";
 
 function Address() {
   const [showPayment, setShowPayment] = useState(false);
@@ -14,6 +16,7 @@ function Address() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [distance, setDistance] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [userDetails, setUserDetails] = useState([]);
   const navigate = useNavigate();
 
   const [addressData, setAddressData] = useState({
@@ -23,6 +26,8 @@ function Address() {
     pincode: "",
     city: "",
     landmark: "",
+    deliCharge: "",
+    totalPrice:"",
   });
   const handleAddressSelect = (addressDetails, dist) => {
     setAddressData({
@@ -56,6 +61,46 @@ function Address() {
   const chargePerKm = 20;
   const deliveryCharge = Math.floor(chargePerKm * distance);
 
+  useEffect(() => {
+    const jwt_token = sessionStorage.getItem("token");
+    if (!jwt_token) return;
+
+    const getUserDetails = async () => {
+      const reqHeader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt_token}`,
+      };
+      const result = await getUserDetailsApi(reqHeader);
+      setUserDetails(result.data);
+      console.log("user result:", result.data);
+    };
+    getUserDetails();
+  }, []);
+
+  const handleSaveAddress = (e) => {
+    e.preventDefault();
+    const { house, street, postOffice, pincode, city, landmark } = addressData;
+    if (!house || !street || !postOffice || !pincode || !city || !landmark) {
+      toast.warning("please fill the form completely");
+    } else {
+      setAddressData({ ...addressData, deliCharge: deliveryCharge,totalPrice:deliveryCharge+userDetails.cartSummary[0].subTotal });
+      console.log("address:", addressData);
+      toast.success("address saved Succesfully");
+    }
+  };
+
+  const handleOrderConfirmation = async() => {
+    console.log("ordered addreess:", addressData);
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+    const reqHeader = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    const result = await setOrderApi(addressData,reqHeader)
+  };
+
+
   return (
     <>
       <div className="container-fluid bg-light min-vh-100 pb-5">
@@ -79,20 +124,13 @@ function Address() {
                     <i className="bi bi-person-fill"></i> Personal Details
                   </h6>
                   <div className="row g-3">
-                    <div className="col-md-6">
-                      <label className="form-label">First Name</label>
+                    <div className="col-12">
+                      <label className="form-label">Name</label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Sean"
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Last Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="D"
+                        placeholder="UserName"
+                        value={userDetails.name}
                       />
                     </div>
                     <div className="col-12">
@@ -101,6 +139,7 @@ function Address() {
                         type="tel"
                         className="form-control"
                         placeholder="9876543210"
+                        value={userDetails.phone}
                       />
                     </div>
                   </div>
@@ -201,7 +240,10 @@ function Address() {
                   </div>
                 </div>
 
-                <button className="btn btn-primary w-100 fs-5 fw-semibold mt-3">
+                <button
+                  className="btn btn-primary w-100 fs-5 fw-semibold mt-3"
+                  onClick={handleSaveAddress}
+                >
                   Save Address
                 </button>
               </form>
@@ -216,7 +258,8 @@ function Address() {
               </h5>
               <ul className="list-group list-group-flush fs-5">
                 <li className="list-group-item d-flex justify-content-between">
-                  Subtotal <span>₹627</span>
+                  Subtotal{" "}
+                  <span>₹{userDetails?.cartSummary?.[0]?.subTotal ?? 0}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between">
                   <p>
@@ -228,7 +271,13 @@ function Address() {
                   <span>₹{deliveryCharge}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between fw-bold text-primary">
-                  Total <span>₹{627 + deliveryCharge}</span>
+                  Total{" "}
+                  <span>
+                    ₹
+                    {userDetails?.cartSummary?.[0]?.subTotal != null
+                      ? userDetails.cartSummary[0].subTotal + deliveryCharge
+                      : 0}
+                  </span>
                 </li>
               </ul>
 
@@ -313,7 +362,8 @@ function Address() {
               variant="primary"
               onClick={() => {
                 handleClose();
-                setTimeout(() => setShowSuccess(true), 300); // slight delay for smoother transition
+                handleOrderConfirmation();
+                setTimeout(() => setShowSuccess(true), 300);
               }}
             >
               Confirm

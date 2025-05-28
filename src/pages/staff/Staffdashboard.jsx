@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Staffsidebar from "../../components/Staffsidebar";
 import { Badge, Button, Card } from "react-bootstrap";
 import "./Staff.css";
 
 function Staffdashboard() {
   const [onDuty, setOnDuty] = useState(false);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    setName(JSON.parse(sessionStorage.getItem("existingUser")).staffName);
+  }, []);
 
   const handleToggle = () => setOnDuty(!onDuty);
   return (
@@ -20,7 +25,7 @@ function Staffdashboard() {
           >
             <div className="d-flex justify-content-between align-items-center mb-4">
               <div>
-                <h2 className="fw-bold text-dark">Welcome, Delivery Staff</h2>
+                <h2 className="fw-bold text-dark">Welcome, {name}</h2>
                 <p className="text-muted">
                   Here’s your current status and order overview.
                 </p>

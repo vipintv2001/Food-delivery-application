@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
+import { getCustomerDetailsApi } from "../../services/allApi";
 
 function Customer() {
+  const [customerDetails, setCustomerDetails] = useState([]);
+
+  useEffect(() => {
+    const getCustomer = async () => {
+      const result = await getCustomerDetailsApi();
+      setCustomerDetails(result.data);
+      console.log("customer", result.data);
+    };
+    getCustomer();
+  }, []);
   return (
     <>
       <div className="dashboard">
@@ -41,34 +52,16 @@ function Customer() {
                 </tr>
               </thead>
               <tbody className="fs-5">
-                <tr className="align-middle">
-                  <td>1</td>
-                  <td>102</td>
-                  <td>Sumesh R</td>
-                  <td>9433722211</td>
-                  <td>Sumesh@gmail.com</td>
-                </tr>
-                <tr className="align-middle">
-                  <td>2</td>
-                  <td>103</td>
-                  <td>Ramesh d</td>
-                  <td>93922022211</td>
-                  <td>Ramesh@gmail.com</td>
-                </tr>
-                <tr className="align-middle">
-                  <td>3</td>
-                  <td>103</td>
-                  <td>Ratheesh D</td>
-                  <td>8734722211</td>
-                  <td>Ratheesh@gmail.com</td>
-                </tr>
-                <tr className="align-middle">
-                  <td>4</td>
-                  <td>104</td>
-                  <td>Mahesh R</td>
-                  <td>6433722211</td>
-                  <td>Mahesh@gmail.com</td>
-                </tr>
+                {customerDetails &&
+                  customerDetails.map((item, index) => (
+                    <tr className="align-middle">
+                      <td>{index + 1}</td>
+                      <td>{item._id}</td>
+                      <td>{item.name}</td>
+                      <td>{item.phone}</td>
+                      <td>{item.email}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

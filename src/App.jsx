@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import "./App.css";
+
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -24,24 +26,29 @@ import RestaurentDashboard from "./pages/restaurent/RestaurentDashboard";
 import AddRestaurent from "./pages/admin/AddRestaurent";
 import Additems from "./pages/restaurent/Additems";
 import RestaurentOrder from "./pages/restaurent/RestaurentOrder";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <>
       {/* <Header /> */}
+      <ScrollToTop/>
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/restaurent" element={<AboutRestaurant />} />
+        <Route path="/restaurent/:id" element={<AboutRestaurant />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/addressdetails" element={<Address />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/admindashboard" element={<Admindashboard />} />
         <Route path="/admindashboard/orders" element={<Trackorder />} />
-        <Route path="/admindashboard/addrestaurent" element={<AddRestaurent />} />
+        <Route
+          path="/admindashboard/addrestaurent"
+          element={<AddRestaurent />}
+        />
         <Route path="/admindashboard/staffs" element={<Staffs />} />
         <Route path="/admindashboard/customer" element={<Customer />} />
         <Route path="/profile" element={<Profile />} />
@@ -51,9 +58,14 @@ function App() {
         <Route path="/restaurentdashboard" element={<RestaurentDashboard />} />
         <Route path="/restaurentdashboard/viewitems" element={<Viewitems />} />
         <Route path="/restaurentdashboard/additems" element={<Additems />} />
-        <Route path="/restaurentdashboard/orders" element={<RestaurentOrder/>}/>
+        <Route
+          path="/restaurentdashboard/orders"
+          element={<RestaurentOrder />}
+        />
       </Routes>
       {/* <Footer /> */}
+
+      <ToastContainer />
     </>
   );
 }

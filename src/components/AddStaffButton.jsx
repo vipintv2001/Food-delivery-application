@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { addNewStaffApi } from "../services/allApi";
+import { toast } from "react-toastify";
 
 function AddStaffButton({ onAdd }) {
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({
+  const [staffDetails, setStaffDetails] = useState({
     name: "",
     email: "",
     phone: "",
@@ -13,20 +15,29 @@ function AddStaffButton({ onAdd }) {
   const handleShow = () => setShow(true);
   const handleClose = () => {
     setShow(false);
-    setFormData({ name: "", email: "", phone: "", password: "" });
+    setStaffDetails({ name: "", email: "", phone: "", password: "" });
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onAdd) onAdd(formData); // send data to parent
-    handleClose();
-  };
+    console.log("staff", staffDetails);
+    const result = await addNewStaffApi(staffDetails);
 
+    if (result.status === 201) {
+      toast.success("staff added succesfully");
+      setStaffDetails({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+      });
+      handleClose();
+    } else if (result.status === 409) {
+      toast.warning("account already exists");
+    } else {
+      toast.error("something went wrong");
+    }
+  };
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
@@ -45,8 +56,10 @@ function AddStaffButton({ onAdd }) {
                 type="text"
                 placeholder="Enter full name"
                 name="name"
-                value={formData.name}
-                onChange={handleChange}
+                value={staffDetails.name}
+                onChange={(e) =>
+                  setStaffDetails({ ...staffDetails, name: e.target.value })
+                }
                 required
               />
             </Form.Group>
@@ -57,8 +70,10 @@ function AddStaffButton({ onAdd }) {
                 type="email"
                 placeholder="Enter email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
+                value={staffDetails.email}
+                onChange={(e) =>
+                  setStaffDetails({ ...staffDetails, email: e.target.value })
+                }
                 required
               />
             </Form.Group>
@@ -69,8 +84,10 @@ function AddStaffButton({ onAdd }) {
                 type="tel"
                 placeholder="Enter phone number"
                 name="phone"
-                value={formData.phone}
-                onChange={handleChange}
+                value={staffDetails.phone}
+                onChange={(e) =>
+                  setStaffDetails({ ...staffDetails, phone: e.target.value })
+                }
                 required
               />
             </Form.Group>
@@ -78,11 +95,13 @@ function AddStaffButton({ onAdd }) {
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Password</Form.Label>
               <Form.Control
-                type="tel"
+                type="text"
                 placeholder="Enter Password"
-                name="phone"
-                value={formData.password}
-                onChange={handleChange}
+                name="password"
+                value={staffDetails.password}
+                onChange={(e) =>
+                  setStaffDetails({ ...staffDetails, password: e.target.value })
+                }
                 required
               />
             </Form.Group>
@@ -91,7 +110,7 @@ function AddStaffButton({ onAdd }) {
             <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="success" type="submit">
+            <Button variant="success" type="submit" onClick={handleSubmit}>
               Add Staff
             </Button>
           </Modal.Footer>

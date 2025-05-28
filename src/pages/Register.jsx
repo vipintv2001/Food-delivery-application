@@ -1,8 +1,37 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import foodimg from "../assets/fastfood.png";
+import { registerUserApi } from "../services/allApi";
+import { ToastContainer, toast } from "react-toastify";
 
 function Register() {
+  const [userDetails, setUserDetails] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password: "",
+    role:'user'
+  });
+
+  const navigate = useNavigate();
+  const handleSubmit = async () => {
+    console.log(userDetails);
+    const { name, phone, email, password } = userDetails;
+
+    if (!name || !phone || !email || !password) {
+      toast.warning("please fill the form completly");
+    } else {
+      const result = await registerUserApi(userDetails);
+      if (result.status === 201) {
+        toast.success("registered Succesfully");
+        navigate("/login");
+      } else if (result.status === 409) {
+        toast.warning("phone number or email already exists");
+      } else {
+        toast.error("something went wrong");
+      }
+    }
+  };
   return (
     <div className="container-fluid min-vh-100 row gx-0">
       {/* Left Column - Form */}
@@ -16,7 +45,7 @@ function Register() {
             with TastyFood
           </h2>
 
-          <form>
+          <div>
             <div className="mb-3">
               <label htmlFor="name" className="form-label fw-medium">
                 Full Name
@@ -26,6 +55,9 @@ function Register() {
                 className="form-control py-2"
                 id="name"
                 placeholder="John Doe"
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, name: e.target.value })
+                }
               />
             </div>
 
@@ -38,6 +70,9 @@ function Register() {
                 className="form-control py-2"
                 id="phone"
                 placeholder="+91 9876543210"
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, phone: e.target.value })
+                }
               />
             </div>
 
@@ -50,6 +85,9 @@ function Register() {
                 className="form-control py-2"
                 id="email"
                 placeholder="you@example.com"
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, email: e.target.value })
+                }
               />
             </div>
 
@@ -62,10 +100,16 @@ function Register() {
                 className="form-control py-2"
                 id="password"
                 placeholder="Create a strong password"
+                onChange={(e) =>
+                  setUserDetails({
+                    ...userDetails,
+                    password: e.target.value,
+                  })
+                }
               />
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label htmlFor="confirmPassword" className="form-label fw-medium">
                 Confirm Password
               </label>
@@ -75,11 +119,12 @@ function Register() {
                 id="confirmPassword"
                 placeholder="Re-enter your password"
               />
-            </div>
+            </div> */}
 
             <button
               type="submit"
               className="btn btn-danger w-100 py-3 fw-bold fs-5 rounded-3"
+              onClick={handleSubmit}
             >
               Create Account
             </button>
@@ -93,7 +138,7 @@ function Register() {
                 Login here
               </Link>
             </p>
-          </form>
+          </div>
 
           <footer className="mt-5 text-muted small text-center">
             © 2025 <span className="text-danger fw-bold">TastyFood</span>. All

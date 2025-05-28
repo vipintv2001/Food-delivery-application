@@ -46,6 +46,13 @@
   animation: fadeInScale 0.3s ease;
 }
 
+.foodcard-description {
+  height: 3.6em; /* Adjust based on how many lines you want (e.g., 2 lines) */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+}
+
 @keyframes fadeInScale {
   from {
     opacity: 0;

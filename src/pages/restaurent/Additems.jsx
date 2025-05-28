@@ -1,9 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import "../admin/Admin.css";
 import Sidebar from "../../components/Sidebar";
 import RestaurentSidebar from "../../components/RestaurentSidebar";
+import { toast } from "react-toastify";
+import { addFoodItemApi } from "../../services/allApi";
 
 function Additems() {
+  const [foodItemDetails, setFoodItemDetails] = useState({
+    productName: "",
+    productImage: "",
+    description: "",
+    category: "",
+    price: "",
+    discount: "",
+  });
+
+  const token = sessionStorage.getItem("token");
+
+  const handleSubmit = async() => {
+    console.log(foodItemDetails);
+    const {productName,productImage,description,category,price,discount} = foodItemDetails;
+    if(!productName || !productImage|| !description || !category || !price || !discount){
+      toast.warning("please fill the form completely")
+    }else{
+      const reqHeader = {
+        "Content-Type":"application/json",
+        Authorization:`Bearer ${token}`
+      }
+      const result = await addFoodItemApi(foodItemDetails,reqHeader)
+      if(result.status===201){
+        toast.success("product added succesfully");
+        setFoodItemDetails({
+          productName: "",
+          productImage: "",
+          description: "",
+          category: "",
+          price: "",
+          discount: "",
+        });
+      }else if(result.status===409){
+        toast.warning("product already exists")
+      }else{
+        toast.error("something went wrong")
+      }
+    }
+  };
   return (
     <div className="dashboard">
       <RestaurentSidebar />
@@ -23,6 +64,13 @@ function Additems() {
                     type="text"
                     className="form-control"
                     placeholder="Enter product name"
+                    onChange={(e) =>
+                      setFoodItemDetails({
+                        ...foodItemDetails,
+                        productName: e.target.value,
+                      })
+                    }
+                    value={foodItemDetails.productName}
                   />
                 </div>
               </div>
@@ -37,6 +85,13 @@ function Additems() {
                     type="text"
                     className="form-control"
                     placeholder="Enter image link"
+                    onChange={(e) =>
+                      setFoodItemDetails({
+                        ...foodItemDetails,
+                        productImage: e.target.value,
+                      })
+                    }
+                    value={foodItemDetails.productImage}
                   />
                 </div>
               </div>
@@ -47,12 +102,28 @@ function Additems() {
                   className="form-control"
                   rows="3"
                   placeholder="Enter product description"
+                  onChange={(e) =>
+                    setFoodItemDetails({
+                      ...foodItemDetails,
+                      description: e.target.value,
+                    })
+                  }
+                  value={foodItemDetails.description}
                 ></textarea>
               </div>
 
               <div className="mb-3">
                 <label className="form-label fw-semibold">Category</label>
-                <select className="form-select">
+                <select
+                  className="form-select"
+                  onChange={(e) =>
+                    setFoodItemDetails({
+                      ...foodItemDetails,
+                      category: e.target.value,
+                    })
+                  }
+                  value={foodItemDetails.category}
+                >
                   <option selected disabled>
                     Select category
                   </option>
@@ -72,6 +143,13 @@ function Additems() {
                   type="number"
                   className="form-control"
                   placeholder="Enter price"
+                  onChange={(e) =>
+                    setFoodItemDetails({
+                      ...foodItemDetails,
+                      price: e.target.value,
+                    })
+                  }
+                  value={foodItemDetails.price}
                 />
               </div>
 
@@ -81,13 +159,21 @@ function Additems() {
                   type="number"
                   className="form-control"
                   placeholder="Enter discount"
+                  onChange={(e) =>
+                    setFoodItemDetails({
+                      ...foodItemDetails,
+                      discount: e.target.value,
+                    })
+                  }
+                  value={foodItemDetails.discount}
                 />
               </div>
 
               <div className="text-center">
                 <button
-                  type="submit"
+                  type="button"
                   className="btn btn-success px-4 py-2 fs-6"
+                  onClick={handleSubmit}
                 >
                   <i className="bi bi-plus-circle me-2"></i>Submit Product
                 </button>

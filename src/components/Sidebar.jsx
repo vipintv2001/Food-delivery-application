@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import { Link, useLocation } from "react-router-dom";
 
 function Sidebar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState("home");
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    setName(JSON.parse(sessionStorage.getItem("existingUser")).name);
+  }, []);
 
   const handleActive = (data) => {
     setIsActive(data);
@@ -112,7 +117,7 @@ function Sidebar() {
               className="rounded-circle me-3"
             />
             <h5 className="m-0">
-              Admin1{" "}
+              {name}{" "}
               <i
                 className={`fa-solid fa-angle-down ms-1 ${
                   isDropdownOpen ? "rotate-180" : ""

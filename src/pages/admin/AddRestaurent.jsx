@@ -3,14 +3,99 @@ import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
 import AddressSelector from "../../components/AddressSelector";
 import RestaurentAddress from "../../components/RestaurentAddress";
+import { toast } from "react-toastify";
+import { addRestaurentApi } from "../../services/allApi";
 
 function AddRestaurent() {
-  const [lattitud, setLattitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [restaurentDetails, setRestaurentDetails] = useState({
+    name: "",
+    resImage: "",
+    description: "",
+    cardDescription:'',
+    categories: [],
+    foodTypes: [],
+    openingHours: "",
+    location: "",
+    lattitude: "",
+    longitude: "",
+    password: "",
+  });
+
+  const handleCheckbox = (e, field) => {
+    const { value, checked } = e.target;
+
+    setRestaurentDetails((prev) => {
+      const updatedArray = checked
+        ? [...prev[field], value]
+        : prev[field].filter((item) => item !== value);
+
+      return {
+        ...prev,
+        [field]: updatedArray,
+      };
+    });
+  };
 
   const handleCoordinate = ({ lat, lng }) => {
-    setLattitude(lat);
-    setLongitude(lng);
+    setRestaurentDetails({
+      ...restaurentDetails,
+      lattitude: lat,
+      longitude: lng,
+    });
+  };
+
+  const handleSubmit = async () => {
+    console.log(restaurentDetails);
+    const {
+      name,
+      resImage,
+      description,
+      cardDescription,
+      categories,
+      foodTypes,
+      openingHours,
+      location,
+      lattitude,
+      longitude,
+      password,
+    } = restaurentDetails;
+    if (
+      !name ||
+      !resImage ||
+      !description ||
+      !cardDescription ||
+      !categories ||
+      !foodTypes ||
+      !openingHours ||
+      !location ||
+      !lattitude ||
+      !longitude ||
+      !password
+    ) {
+      toast.warning("Please fill the form completely");
+    } else {
+      const result = await addRestaurentApi(restaurentDetails);
+      if(result.status===201){
+        toast.success("Restaurent Added Successfully")
+        setRestaurentDetails({
+          name: "",
+          resImage: "",
+          description: "",
+          cardDescription:"",
+          categories: [],
+          foodTypes: [],
+          openingHours: "",
+          location: "",
+          lattitude: "",
+          longitude: "",
+          password: "",
+        });
+      }else if(result.status===409){
+        toast.warning("restaurent already exists")
+      }else{
+        toast.error("something went wrong")
+      }
+    }
   };
 
   return (
@@ -28,12 +113,19 @@ function AddRestaurent() {
                 </label>
                 <div className="input-group">
                   <span className="input-group-text">
-                    <i className="bi bi-basket-fill"></i>
+                    <i className="bi bi-shop me-1 text-secondary"></i>
                   </span>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Enter Restaurent name"
+                    onChange={(e) =>
+                      setRestaurentDetails({
+                        ...restaurentDetails,
+                        name: e.target.value,
+                      })
+                    }
+                    value={restaurentDetails.name}
                   />
                 </div>
               </div>
@@ -48,6 +140,13 @@ function AddRestaurent() {
                     type="text"
                     className="form-control"
                     placeholder="Enter image link"
+                    onChange={(e) =>
+                      setRestaurentDetails({
+                        ...restaurentDetails,
+                        resImage: e.target.value,
+                      })
+                    }
+                    value={restaurentDetails.resImage}
                   />
                 </div>
               </div>
@@ -58,7 +157,33 @@ function AddRestaurent() {
                   className="form-control"
                   rows="3"
                   placeholder="Enter product description"
+                  onChange={(e) =>
+                    setRestaurentDetails({
+                      ...restaurentDetails,
+                      description: e.target.value,
+                    })
+                  }
+                  value={restaurentDetails.description}
                 ></textarea>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold">Card Description</label>
+                <div className="input-group">
+                  
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter card Description"
+                    onChange={(e) =>
+                      setRestaurentDetails({
+                        ...restaurentDetails,
+                        cardDescription: e.target.value,
+                      })
+                    }
+                    value={restaurentDetails.cardDescription}
+                  />
+                </div>
               </div>
 
               <div className="mb-3">
@@ -66,13 +191,15 @@ function AddRestaurent() {
                 <div className="d-flex flex-wrap gap-3">
                   {[
                     "Chinese",
-                    "Indian",
                     "Italian",
                     "North Indian",
                     "South Indian",
                     "Mexican",
                     "Arabian",
                     "MultiCuisine",
+                    "Fast Food",
+                    "Bakery",
+                    "Cafe",
                   ].map((category, index) => (
                     <div key={index} className="form-check">
                       <input
@@ -81,6 +208,10 @@ function AddRestaurent() {
                         value={category}
                         id={`category-${index}`}
                         name="categories"
+                        checked={restaurentDetails.categories.includes(
+                          category
+                        )}
+                        onChange={(e) => handleCheckbox(e, "categories")}
                       />
                       <label
                         className="form-check-label"
@@ -96,7 +227,7 @@ function AddRestaurent() {
               <div className="mb-3">
                 <label className="form-label fw-semibold">Food type</label>
                 <div className="d-flex flex-wrap gap-3">
-                  {["Veg", "Non-Veg"].map((category, index) => (
+                  {["veg", "non-veg"].map((category, index) => (
                     <div key={index} className="form-check">
                       <input
                         className="form-check-input"
@@ -104,6 +235,8 @@ function AddRestaurent() {
                         value={category}
                         id={`category-${index}`}
                         name="categories"
+                        checked={restaurentDetails.foodTypes.includes(category)}
+                        onChange={(e) => handleCheckbox(e, "foodTypes")}
                       />
                       <label
                         className="form-check-label"
@@ -117,11 +250,34 @@ function AddRestaurent() {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Address</label>
+                <label className="form-label fw-semibold">Opening Hours</label>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter Restaurent Address"
+                  placeholder="Enter Time"
+                  onChange={(e) =>
+                    setRestaurentDetails({
+                      ...restaurentDetails,
+                      openingHours: e.target.value,
+                    })
+                  }
+                  value={restaurentDetails.openingHours}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold">Location</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter Restaurent Location"
+                  onChange={(e) =>
+                    setRestaurentDetails({
+                      ...restaurentDetails,
+                      location: e.target.value,
+                    })
+                  }
+                  value={restaurentDetails.location}
                 />
               </div>
 
@@ -138,13 +294,21 @@ function AddRestaurent() {
                   type="password"
                   className="form-control"
                   placeholder="Enter password"
+                  onChange={(e) =>
+                    setRestaurentDetails({
+                      ...restaurentDetails,
+                      password: e.target.value,
+                    })
+                  }
+                  value={restaurentDetails.password}
                 />
               </div>
 
               <div className="text-center">
                 <button
-                  type="submit"
+                  type="button"
                   className="btn btn-success px-4 py-2 fs-6"
+                  onClick={handleSubmit}
                 >
                   <i className="bi bi-plus-circle me-2"></i>Add Restaurent
                 </button>

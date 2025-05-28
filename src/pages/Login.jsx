@@ -1,8 +1,48 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import foodimg from "../assets/foodimg2.png";
+import { toast } from "react-toastify";
+import { loginUserApi } from "../services/allApi";
 
 function Login() {
+  const [loginUser, setLoginUser] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const { email, password } = loginUser;
+    if (!email || !password) {
+      toast.warning("please fill the form completely");
+    } else {
+      const result = await loginUserApi(loginUser);
+      if (result.status === 200) {
+        sessionStorage.setItem("existingUser", JSON.stringify(result.data.userData));
+        sessionStorage.setItem("token",result.data.jwt_token)
+        toast.success("login succesfully");
+        console.log(result.data.userData.role);
+        if (result.data.role === "user") {
+          if (result.data.userData.role === "admin") {
+            navigate("/admindashboard");
+          } else {
+            navigate("/home");
+          }
+        }else if (result.data.role === "staff") {
+          navigate("/staffdashboard");
+        } else if (result.data.role === "restaurent") {
+          navigate("/restaurentdashboard");
+        } else {
+          navigate("/home");
+        }
+      } else if (result.status === 406) {
+        toast.warning("invalid email or password");
+      } else {
+        toast.error("something went wrong");
+      }
+    }
+  };
   return (
     <div className="container-fluid min-vh-100 d-flex flex-wrap">
       <div className="col-md-1"></div>
@@ -28,6 +68,9 @@ function Login() {
               type="email"
               className="form-control py-2"
               placeholder="example@gmail.com"
+              onChange={(e) =>
+                setLoginUser({ ...loginUser, email: e.target.value })
+              }
             />
           </div>
 
@@ -40,6 +83,9 @@ function Login() {
               type="password"
               className="form-control py-2"
               placeholder="........"
+              onChange={(e) =>
+                setLoginUser({ ...loginUser, password: e.target.value })
+              }
             />
           </div>
 
@@ -59,11 +105,12 @@ function Login() {
             </Link>
           </div>
 
-          <Link to="/home ">
-            <button className="btn btn-warning text-white fw-bold w-100 py-2">
-              Login Now
-            </button>
-          </Link>
+          <button
+            className="btn btn-warning text-white fw-bold w-100 py-2"
+            onClick={handleLogin}
+          >
+            Login Now
+          </button>
 
           <p className="mt-3">
             Don’t have an account?{" "}
