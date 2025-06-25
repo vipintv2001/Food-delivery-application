@@ -1,52 +1,49 @@
-import React, { use } from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
-import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import Editfooditem from "./Editfooditem";
-import { deleteFoodItemApi } from "../services/allApi";
+import { deleteRestaurentApi } from "../services/allApi";
 import { toast } from "react-toastify";
 
-function Adminfoodcard({ food,onDelete }) {
+function AdminRestaurentCard({ restaurent, onDelete }) {
+  console.log("res", restaurent);
   const [showDelete, setShowDelete] = useState(false);
 
   const handleDeleteClose = () => setShowDelete(false);
   const handleDeleteShow = () => setShowDelete(true);
-  const token= sessionStorage.getItem("token")
+  const token = sessionStorage.getItem("token");
 
-  const handleDeleteItem = async() => {
-    console.log("delete item:", food);
+  const handleDeleteRestaurent = async () => {
+    console.log("delete item:", restaurent);
     const reqHeader = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
-    const result = await deleteFoodItemApi(food._id,reqHeader)
-    if(result.status===201){
-      toast.success("item deleted succesfully");
+    const result = await deleteRestaurentApi(restaurent._id, reqHeader);
+    if (result.status === 201) {
+      toast.success("restaurent deleted succesfully");
       handleDeleteClose();
-      if (onDelete) onDelete(food._id)
-    }else{
-      toast.error("something went wrong")
-    }   
+      if (onDelete) onDelete(restaurent._id);
+    } else {
+      toast.error("something went wrong");
+    }
   };
-
   return (
     <>
       <div>
         <Card style={{ width: "16rem" }} className="foodcard shadow mt-3">
           <Card.Img
             variant="top"
-            src={food.productImage}
+            src={restaurent.restaurentImage}
             width={"100%"}
             style={{ height: "11rem" }}
           />
           <Card.Body>
             <Card.Title className="fs-4 fw-bolder text-center mb-3">
-              {food.productName}
+              {restaurent.restaurentName}
             </Card.Title>
             <div className="d-flex justify-content-evenly">
-              {food && <Editfooditem foodItem={food} />}
+              {/* {food && <Editfooditem foodItem={food} />} */}
 
               <button className="btn btn-danger" onClick={handleDeleteShow}>
                 <i className="bi bi-trash me-1"></i>Delete
@@ -85,8 +82,8 @@ function Adminfoodcard({ food,onDelete }) {
           </Button>
           <Button
             variant="danger"
-            onClick={handleDeleteItem}
             className="px-4 rounded-pill"
+            onClick={handleDeleteRestaurent}
           >
             Delete
           </Button>
@@ -96,4 +93,4 @@ function Adminfoodcard({ food,onDelete }) {
   );
 }
 
-export default Adminfoodcard;
+export default AdminRestaurentCard;

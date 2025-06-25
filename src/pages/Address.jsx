@@ -6,7 +6,12 @@ import { useNavigate } from "react-router-dom";
 import AddressSelector from "../components/AddressSelector";
 import Footer from "../components/Footer";
 import SuccessModal from "../components/SuccessModal";
-import { getUserDetailsApi, setOrderApi } from "../services/allApi";
+import {
+  deleteCartApi,
+  getUserDetailsApi,
+  proceedToPayApi,
+  setOrderApi,
+} from "../services/allApi";
 import { toast } from "react-toastify";
 
 function Address() {
@@ -17,6 +22,7 @@ function Address() {
   const [distance, setDistance] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [userDetails, setUserDetails] = useState([]);
+  const [isAddress,setIsAddress] = useState(false);
   const navigate = useNavigate();
 
   const [addressData, setAddressData] = useState({
@@ -27,7 +33,7 @@ function Address() {
     city: "",
     landmark: "",
     deliCharge: "",
-    totalPrice:"",
+    totalPrice: "",
   });
   const handleAddressSelect = (addressDetails, dist) => {
     setAddressData({
@@ -52,6 +58,7 @@ function Address() {
     if (paymentMethod === "cod") {
       handleShow();
     } else if (paymentMethod === "card") {
+      handlePCardPay();
       navigate("/payment");
     } else {
       alert("Please select a payment method.");
@@ -83,23 +90,72 @@ function Address() {
     if (!house || !street || !postOffice || !pincode || !city || !landmark) {
       toast.warning("please fill the form completely");
     } else {
-      setAddressData({ ...addressData, deliCharge: deliveryCharge,totalPrice:deliveryCharge+userDetails.cartSummary[0].subTotal });
+      setAddressData({
+        ...addressData,
+        deliCharge: deliveryCharge,
+        totalPrice: deliveryCharge + userDetails.cartSummary[0].subTotal,
+      });
       console.log("address:", addressData);
       toast.success("address saved Succesfully");
+      setIsAddress(true);
     }
   };
 
-  const handleOrderConfirmation = async() => {
+  const handlePCardPay = async () => {
+    const jwt_token = sessionStorage.getItem("token");
+    if (!jwt_token) return;
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt_token}`,
+      };
+      const reqBody = [
+        userDetails.cart,
+        {
+          quantity: userDetails.cartSummary[0].quantity,
+          gst: userDetails.cartSummary[0].gst,
+          subTotal: userDetails.cartSummary[0].subTotal,
+          restaurentId: userDetails.cartSummary[0].restaurentId,
+          deliveryCharge: deliveryCharge,
+          totalPrice: userDetails.cartSummary[0].subTotal + deliveryCharge,
+          address: {
+            HouseName: addressData.house,
+            street: addressData.street,
+            postOffice: addressData.postOffice,
+            pinCode: addressData.pincode,
+            city: addressData.city,
+            landMark: addressData.landmark,
+          },
+        },
+      ];
+      console.log("req Body", reqBody);
+      const result = await proceedToPayApi(reqBody, headers);
+      if (result.status === 200) {
+        console.log("details", result.data);
+      } else {
+        toast.error("error");
+      }
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  const handleOrderConfirmation = async () => {
     console.log("ordered addreess:", addressData);
+    const orderData = {...addressData,paymentStatus:"cod"}
     const token = sessionStorage.getItem("token");
     if (!token) return;
     const reqHeader = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
-    const result = await setOrderApi(addressData,reqHeader)
+    const result = await setOrderApi(orderData, reqHeader);
+    if (result.status === 201) {
+      await deleteCartApi(reqHeader);
+    } else {
+      toast.warning("some error occured");
+    }
   };
-
 
   return (
     <>
@@ -288,6 +344,7 @@ function Address() {
                     handleButton();
                     handleShowPayement();
                   }}
+                  disabled={!isAddress}
                 >
                   Proceed to Pay
                 </button>

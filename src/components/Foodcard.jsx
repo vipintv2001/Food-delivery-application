@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "./Foodcard.css";
-import { addToCartApi } from "../services/allApi";
+import { addToCartApi, deleteCartApi } from "../services/allApi";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Foodcard({ foodItem }) {
   const [isHovered, setIsHovered] = useState(false);
+
   const navigate = useNavigate();
+  const { id } = useParams();
+  const selectedRestaurent = localStorage.getItem("selectedRestaurent");
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
@@ -30,17 +34,78 @@ function Foodcard({ foodItem }) {
 
   const handleAddCart = async () => {
     console.log("Addedd item", foodItem);
-    const reqHeader = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-    const result = await addToCartApi(foodItem, reqHeader);
-    if (result.status === 201) {
-      toast.success("Item added to cart");
-      navigate("/cart");
-      // localStorage.setItem("selectedRestaurent", foodItem.userId);
+    if (!token) {
+      Swal.fire({
+        title: "🔒 Login Required!",
+        text: "You need to log in to add items to your cart.",
+        icon: "warning",
+        background: "#fffef0",
+        color: "#333",
+        confirmButtonColor: "#4caf50",
+        cancelButtonColor: "#f44336",
+        confirmButtonText: " Go to Login",
+        cancelButtonText: "❌ Cancel",
+        showCancelButton: true,
+        reverseButtons: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+      return;
     } else {
-      toast.error("something went wrong");
+      const reqHeader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      if (selectedRestaurent && id !== selectedRestaurent) {
+        const confirm = Swal.fire({
+          title: "Different Restaurant Detected",
+          text: "Your cart has items from another restaurant. Do you want to clear the cart and continue?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, clear cart",
+          cancelButtonText: "Cancel",
+        });
+
+        if ((await confirm).isConfirmed) {
+          try {
+            const result = await deleteCartApi(reqHeader);
+            if (result.status === 200) {
+              localStorage.setItem("selectedRestaurent", id);
+              const result = await addToCartApi(foodItem, reqHeader);
+              if (result.status === 201) {
+                toast.success("Item added to cart");
+                navigate("/cart");
+              } else {
+                toast.error("something went wrong");
+              }
+            } else {
+              toast.error("failed to clear cart");
+            }
+          } catch (err) {
+            console.log("error", err);
+            toast.error("some error occured");
+          }
+        }
+      } else if (!selectedRestaurent) {
+        localStorage.setItem("selectedRestaurent", id);
+        const result = await addToCartApi(foodItem, reqHeader);
+        if (result.status === 201) {
+          toast.success("Item added to cart");
+          navigate("/cart");
+        } else {
+          toast.error("something went wrong");
+        }
+      } else {
+        const result = await addToCartApi(foodItem, reqHeader);
+        if (result.status === 201) {
+          toast.success("Item added to cart");
+          navigate("/cart");
+        } else {
+          toast.error("something went wrong");
+        }
+      }
     }
   };
 

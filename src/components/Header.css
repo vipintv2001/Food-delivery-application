@@ -87,3 +87,29 @@
     gap: 16px;
   }
 }
+
+.dropdown-menu {
+  border-radius: 12px;
+  min-width: 180px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-item {
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+  color: #212529;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

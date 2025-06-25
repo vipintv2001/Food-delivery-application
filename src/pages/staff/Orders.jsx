@@ -1,32 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Staffsidebar from "../../components/Staffsidebar";
+import { claimOrderApi, getAllOrderApi } from "../../services/allApi";
+import { toast } from "react-toastify";
 
 function Orders() {
-  const [orders, setOrders] = useState([
-    {
-      id: 101,
-      customer: "John Doe",
-      address: "Flat No.231, Bogan Villa, Kakkanad, Kochi, Near TechnoPark",
-      items: 3,
-      restaurant: "Delight",
-    },
-    {
-      id: 102,
-      customer: "Priya K.",
-      address: "22, Palm Heights, Aluva, Ernakulam",
-      items: 2,
-      restaurant: "Oryx Village",
-    },
-    {
-      id: 103,
-      customer: "Ahmed A.",
-      address: "9 Rose Garden, Kalamassery, Kochi",
-      items: 4,
-      restaurant: "Rahmaniya",
-    },
-  ]);
-
-  const [claimedMessage, setClaimedMessage] = useState("");
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const tooltipTriggerList = document.querySelectorAll(
@@ -37,6 +15,41 @@ function Orders() {
     });
   }, []);
 
+  const token = sessionStorage.getItem("token");
+
+  const reqHeader = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+
+  const getOrderDetails = async () => {
+    const orders = await getAllOrderApi(reqHeader);
+    console.log("orderDetails:", orders.data);
+    setOrders(orders.data);
+  };
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+    getOrderDetails();
+  }, []);
+
+  const handleClaimOrder = async (id) => {
+    const onDuty = sessionStorage.getItem("workStatus");
+    if (onDuty) {
+      const result = await claimOrderApi(id, reqHeader);
+      console.log(result.data);
+      if (result.status === 201) {
+        toast.success("succesfully claimed the order");
+        getOrderDetails()
+      } else {
+        toast.error("something went wrong");
+      }
+    } else {
+      toast.warning("orders can claimed only when onDuty");
+    }
+  };
+
   return (
     <div className="dashboard">
       <Staffsidebar />
@@ -44,21 +57,10 @@ function Orders() {
         <div className="container py-4" style={{ minHeight: "100vh" }}>
           <h2 className="mb-4 fw-bold text-center">Unclaimed Orders</h2>
 
-          {claimedMessage && (
-            <div
-              className="alert alert-success alert-dismissible fade show"
-              role="alert"
-            >
-              {claimedMessage}
-              <button
-                type="button"
-                className="btn-close"
-                onClick={() => setClaimedMessage("")}
-              ></button>
-            </div>
-          )}
-
-          {orders.length === 0 ? (
+          {orders.filter(
+            (order) =>
+              !order.deliveryBoy && order.deliveryStatus !== "Cancelled"
+          ).length === 0 ? (
             <div className="text-center text-muted mt-5 fs-5">
               No unclaimed orders available.
             </div>
@@ -76,36 +78,60 @@ function Orders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td className="fw-semibold">#{order.id}</td>
-                      <td>{order.customer}</td>
-                      <td>
-                        <i className="bi bi-shop me-1 text-secondary"></i>
-                        {order.restaurant}
-                      </td>
-                      <td style={{ maxWidth: "200px" }}>
-                        <div
-                          className="text-truncate"
-                          data-bs-toggle="tooltip"
-                          title={order.address}
-                        >
-                          {order.address}
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-secondary">
-                          {order.items} Items
-                        </span>
-                      </td>
-                      <td>
-                        <button className="btn btn-sm btn-outline-primary">
-                          <i className="bi bi-hand-index-thumb me-1"></i>Claim
-                          Order
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {orders
+                    .filter(
+                      (order) =>
+                        !order.deliveryBoy &&
+                        order.deliveryStatus !== "Cancelled"
+                    )
+                    .map((order) => (
+                      <tr key={order._id}>
+                        <td className="fw-semibold">#{order._id}</td>
+                        <td>{order.address?.name || "NA"}</td>
+                        <td>
+                          <i className="bi bi-shop me-1 text-secondary"></i>
+                          {order.cart[0]?.restaurentName || "NA"}
+                        </td>
+                        <td style={{ maxWidth: "200px" }}>
+                          <div
+                            className="text-truncate"
+                            data-bs-toggle="tooltip"
+                            title={`${order.address?.name || ""}, ${
+                              order.address?.HouseName || ""
+                            }, ${order.address?.street || ""}, ${
+                              order.address?.postOffice || ""
+                            }, ${order.address?.city || ""}, ${
+                              order.address?.landMark || ""
+                            }, ${order.address?.pinCode || ""}, Ph: ${
+                              order.address?.phone || ""
+                            }`}
+                          >
+                            {[
+                              order.address?.HouseName,
+                              order.address?.street,
+                              order.address?.city,
+                            ]
+                              .filter(Boolean)
+                              .join(", ")}
+                            ...
+                          </div>
+                        </td>
+                        <td>
+                          <span className="badge bg-secondary">
+                            {order.cart.length} Items
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => handleClaimOrder(order._id)}
+                          >
+                            <i className="bi bi-hand-index-thumb me-1"></i>
+                            Claim Order
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

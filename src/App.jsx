@@ -27,12 +27,13 @@ import AddRestaurent from "./pages/admin/AddRestaurent";
 import Additems from "./pages/restaurent/Additems";
 import RestaurentOrder from "./pages/restaurent/RestaurentOrder";
 import ScrollToTop from "./components/ScrollToTop";
+import ViewRestaurent from "./pages/admin/ViewRestaurent";
 
 function App() {
   return (
     <>
       {/* <Header /> */}
-      <ScrollToTop/>
+      <ScrollToTop />
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/" element={<Landingpage />} />
@@ -51,6 +52,7 @@ function App() {
         />
         <Route path="/admindashboard/staffs" element={<Staffs />} />
         <Route path="/admindashboard/customer" element={<Customer />} />
+        <Route path="/admindashboard/restaurent" element={<ViewRestaurent/>} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/staffdashboard" element={<Staffdashboard />} />
         <Route path="/staffdashboard/orders" element={<Stafforders />} />
@@ -65,7 +67,18 @@ function App() {
       </Routes>
       {/* <Footer /> */}
 
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover={false}
+        theme="colored"
+      />
     </>
   );
 }

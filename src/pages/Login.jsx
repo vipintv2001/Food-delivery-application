@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import foodimg from "../assets/foodimg2.png";
 import { toast } from "react-toastify";
-import { loginUserApi } from "../services/allApi";
+import { getCartApi, loginUserApi } from "../services/allApi";
 
 function Login() {
   const [loginUser, setLoginUser] = useState({
@@ -12,6 +12,30 @@ function Login() {
 
   const navigate = useNavigate();
 
+  const fetchUserCart = async () => {
+    console.log("📦 Fetching user cart..."); // ✅ Add this
+    const token = sessionStorage.getItem("token");
+    const reqHeader = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    try {
+      const result = await getCartApi(reqHeader);
+        const cart = result.data;
+        console.log("📦 Full cart API result:", result);
+        console.log("🛒 Cart fetched:", cart); 
+
+        if (cart.length > 0) {
+          localStorage.setItem("selectedRestaurent", cart[0].restaurentId);
+        } else {
+          localStorage.removeItem("selectedRestaurent");
+        }
+    } catch (err) {
+      console.log("🚨 Failed to fetch user cart", err);
+    }
+  };
+  
+
   const handleLogin = async () => {
     const { email, password } = loginUser;
     if (!email || !password) {
@@ -19,21 +43,27 @@ function Login() {
     } else {
       const result = await loginUserApi(loginUser);
       if (result.status === 200) {
-        sessionStorage.setItem("existingUser", JSON.stringify(result.data.userData));
-        sessionStorage.setItem("token",result.data.jwt_token)
+        sessionStorage.setItem(
+          "existingUser",
+          JSON.stringify(result.data.userData)
+        );
+        sessionStorage.setItem("token", result.data.jwt_token);
         toast.success("login succesfully");
         console.log(result.data.userData.role);
         if (result.data.role === "user") {
           if (result.data.userData.role === "admin") {
             navigate("/admindashboard");
           } else {
+            await fetchUserCart();
+            console.log("hello world")
             navigate("/home");
           }
-        }else if (result.data.role === "staff") {
+        } else if (result.data.role === "staff") {
           navigate("/staffdashboard");
         } else if (result.data.role === "restaurent") {
           navigate("/restaurentdashboard");
         } else {
+          await fetchUserCart();
           navigate("/home");
         }
       } else if (result.status === 406) {

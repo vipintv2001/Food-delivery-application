@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
+import { getAllOrderApi } from "../../services/allApi";
 
 function Trackorder() {
-  const [status, setStatus] = useState("processing");
+  const [orderDetails, setOrderDeatails] = useState([]);
+  const token = sessionStorage.getItem("token");
 
-  const setBgColor = (status) => {
-    switch (status) {
-      case "processing":
-        return "yellow";
-      case "out_for_delivery":
-        return "#1e5a66";
-      case "delivered":
-        return "green";
-      case "cancelled":
-        return "red";
-      default:
-        return "grey";
-    }
+  const reqHeader = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
   };
+  const getOrderDetails = async () => {
+    const orders = await getAllOrderApi(reqHeader);
+    console.log("orderDetails:", orders.data);
+    setOrderDeatails(orders.data);
+  };
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+    getOrderDetails();
+  }, []);
 
   useEffect(() => {
     const tooltipTriggerList = document.querySelectorAll(
@@ -34,275 +37,296 @@ function Trackorder() {
       <Sidebar />
       <div className="content content-bg">
         <div className="container-fluid">
-          <div className="container mt-5">
-            <h3 className="text-center fw-bolder mb-4">ORDERS</h3>
-            <div>
-              <h4 className="text-center fw-bold mb-4">
-                <i className="bi bi-receipt-cutoff me-2"></i>Live Orders
+          <div className="container py-5">
+            <h2 className="text-center fw-bold mb-5 text-primary">
+              <i className="bi bi-receipt me-2"></i>Orders Dashboard
+            </h2>
+
+            {/* Live Orders Section */}
+            <section className="mb-5">
+              <h4 className="text-center fw-semibold mb-4">
+                <i className="bi bi-lightning-fill me-2 text-warning"></i>Live
+                Orders
               </h4>
 
-              <div className="table-responsive">
-                <table className="table table-bordered table-hover text-center align-middle fs-6">
+              <div className="table-responsive shadow rounded-3 overflow-hidden">
+                <table
+                  className="table table-hover align-middle text-center"
+                  style={{
+                    borderCollapse: "separate",
+                    borderSpacing: "0 12px", // Adds space between rows
+                    fontSize: "0.95rem",
+                  }}
+                >
                   <thead className="table-dark">
                     <tr>
                       <th>Order ID</th>
                       <th>Date</th>
-                      <th>Customer Name</th>
-                      <th>Restaurent</th>
-                      <th>Food Items</th>
+                      <th>Customer</th>
+                      <th>Restaurant</th>
+                      <th>Items</th>
                       <th>Total</th>
                       <th>Address</th>
-                      <th>Delivery Status</th>
+                      <th>Status</th>
                       <th>Payment</th>
-                      <th>Delivery Boy</th>
+                      <th>Delivery</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>116</td>
-                      <td>12-04-2025 08:25</td>
-                      <td>Sean J</td>
-                      <td>Delight Hotel</td>
-                      <td>
-                        <div
-                          data-bs-toggle="tooltip"
-                          title="2x Meal"
-                          style={{
-                            fontSize: "1.2rem",
-                            padding: "10px 15px",
-                            maxWidth: "300px",
-                          }}
+                    {orderDetails.filter((order) =>
+                      ["processing", "out for delivery"].includes(
+                        order.deliveryStatus
+                      )
+                    ).length > 0 ? (
+                      orderDetails
+                        .filter((order) =>
+                          ["processing", "out for delivery"].includes(
+                            order.deliveryStatus
+                          )
+                        )
+                        .map((order, index) => (
+                          <tr
+                            key={index}
+                            className="bg-white shadow-sm"
+                            style={{
+                              borderRadius: "10px",
+                              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                            }}
+                          >
+                            <td>{order._id.slice(-4).toUpperCase()}</td>
+                            <td>
+                              {new Date(order.createdAt)
+                                .toLocaleDateString("en-IN", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
+                                .replaceAll("/", "-")}{" "}
+                              {new Date(order.createdAt).toLocaleTimeString(
+                                "en-IN",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </td>
+                            <td>{order.address?.name}</td>
+                            <td>{order.cart[0]?.restaurentName || "NA"}</td>
+                            <td>
+                              <div
+                                data-bs-toggle="tooltip"
+                                title={order.cart
+                                  .map(
+                                    (item) =>
+                                      `${item.quantity} x ${item.productName}`
+                                  )
+                                  .join(", ")}
+                                style={{ fontSize: "1rem", maxWidth: "250px" }}
+                              >
+                                <i className="bi bi-info-circle me-1 text-primary"></i>
+                                {order.cart.length} items
+                              </div>
+                            </td>
+                            <td>₹{order.totalPrice}</td>
+                            <td style={{ maxWidth: "200px" }}>
+                              <div
+                                className="text-truncate"
+                                data-bs-toggle="tooltip"
+                                title={`${order.address?.name || ""}, ${
+                                  order.address?.HouseName || ""
+                                }, ${order.address?.street || ""}, ${
+                                  order.address?.postOffice || ""
+                                }, ${order.address?.city || ""}, ${
+                                  order.address?.landMark || ""
+                                }, ${order.address?.pinCode || ""}, Ph: ${
+                                  order.address?.phone || ""
+                                }`}
+                              >
+                                {[
+                                  order.address?.HouseName,
+                                  order.address?.street,
+                                  order.address?.city,
+                                ]
+                                  .filter(Boolean)
+                                  .join(", ")}
+                                ...
+                              </div>
+                            </td>
+                            <td>
+                              <span
+                                className={`badge px-3 py-2 rounded-pill shadow-sm ${
+                                  order.deliveryStatus === "processing"
+                                    ? "bg-info text-dark"
+                                    : "bg-warning text-dark"
+                                }`}
+                              >
+                                {order.deliveryStatus.replaceAll("-", " ")}
+                              </span>
+                            </td>
+                            <td>
+                              <span
+                                className={`badge px-3 py-2 rounded-pill shadow-sm ${
+                                  order.paymentStatus === "cod"
+                                    ? "bg-warning text-dark"
+                                    : "bg-success text-white"
+                                }`}
+                              >
+                                {order.paymentStatus === "cod"
+                                  ? "Cash on Delivery"
+                                  : "Paid"}
+                              </span>
+                            </td>
+                            <td>
+                              {order.deliveryBoy ? (
+                                <span className="text-success fw-medium">
+                                  <i className="bi bi-person-fill-check me-1"></i>
+                                  {order.deliveryBoy}
+                                </span>
+                              ) : (
+                                <span className="text-danger fw-medium">
+                                  <i className="bi bi-exclamation-triangle me-1"></i>
+                                  Not Taken
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="10"
+                          className="text-center text-muted py-4"
                         >
-                          <i className="bi bi-info-circle me-1 text-primary"></i>
-                          2 items
-                        </div>
-                      </td>
-                      <td>₹230</td>
-                      <td style={{ maxWidth: "200px" }}>
-                        <div
-                          className="text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="Flat No.231, Bogan Villa, Kakkanad, Kochi, Near TechnoPark"
-                        >
-                          Flat No.231, Bogan Villa...
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-info">Processing</span>
-                      </td>
-                      <td>
-                        <span className="badge bg-success">Paid</span>
-                      </td>
-                      <td>
-                        <i class="bi bi-exclamation-triangle me-1"></i>Not Taken
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>113</td>
-                      <td>12-04-2025 07:23</td>
-                      <td>John D</td>
-                      <td>Rahmaniya</td>
-                      <td>
-                        <div
-                          data-bs-toggle="tooltip"
-                          title="1x Chicken Biriyani"
-                          style={{
-                            fontSize: "1.2rem",
-                            padding: "10px 15px",
-                            maxWidth: "300px",
-                          }}
-                        >
-                          <i className="bi bi-info-circle me-1 text-primary"></i>
-                          1 items
-                        </div>
-                      </td>
-                      <td>₹160</td>
-                      <td style={{ maxWidth: "200px" }}>
-                        <div
-                          className="text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="Flat No.231, Bogan Villa, Kakkanad, Kochi, Near TechnoPark"
-                        >
-                          Flat No.231, Bogan Villa...
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-warning">
-                          Out For Delivery
-                        </span>
-                      </td>
-                      <td>
-                        <span className="badge bg-success">Paid</span>
-                      </td>
-                      <td>
-                        <i className="bi bi-person-fill-check me-1 text-success"></i>
-                        Kumar
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>112</td>
-                      <td>12-04-2025 07:12</td>
-                      <td>Suresh D</td>
-                      <td>Delight Hotel</td>
-                      <td>
-                        <div
-                          data-bs-toggle="tooltip"
-                          title="1x Cheese Burger, 2x Alfarm, 2x Chicken Shawarma, 1x Mayonnaise"
-                          style={{
-                            fontSize: "1.2rem",
-                            padding: "10px 15px",
-                            maxWidth: "300px",
-                          }}
-                        >
-                          <i className="bi bi-info-circle me-1 text-primary"></i>
-                          6 items
-                        </div>
-                      </td>
-                      <td>₹1024</td>
-                      <td style={{ maxWidth: "200px" }}>
-                        <div
-                          className="text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="Flat No.231, Bogan Villa, Kakkanad, Kochi, Near TechnoPark"
-                        >
-                          Flat No.231, Bogan Villa...
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-warning">
-                          Out For Delivery
-                        </span>
-                      </td>
-                      <td>
-                        <span className="badge bg-primary">
-                          Cash on Delivery
-                        </span>
-                      </td>
-                      <td>
-                        <i className="bi bi-person-fill-check me-1 text-success"></i>
-                        Sumesh M
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>112</td>
-                      <td>12-04-2025 07:12</td>
-                      <td>Suresh D</td>
-                      <td>Oryx Village</td>
-                      <td>
-                        <div
-                          data-bs-toggle="tooltip"
-                          title="1x Cheese Burger, 2x Alfarm, 2x Chicken Shawarma, 1x Mayonnaise"
-                          style={{
-                            fontSize: "1.2rem",
-                            padding: "10px 15px",
-                            maxWidth: "300px",
-                          }}
-                        >
-                          <i className="bi bi-info-circle me-1 text-primary"></i>
-                          6 items
-                        </div>
-                      </td>
-                      <td>₹1024</td>
-                      <td style={{ maxWidth: "200px" }}>
-                        <div
-                          className="text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="Flat No.231, Bogan Villa, Kakkanad, Kochi, Near TechnoPark"
-                        >
-                          Flat No.231, Bogan Villa...
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-info">Processing</span>
-                      </td>
-                      <td>
-                        <span className="badge bg-primary">
-                          Cash on Delivery
-                        </span>
-                      </td>
-                      <td>
-                        <i className="bi bi-person-fill-check me-1 text-success"></i>
-                        Jadhav M
-                      </td>
-                    </tr>
+                          <i className="bi bi-emoji-frown me-2"></i>No live
+                          orders found
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
+            </section>
 
-              <h5 className="text-center fw-bold mt-5 mb-4">
-                <i className="bi bi-clock-history me-2"></i>Previous Orders
-              </h5>
+            {/* Previous Orders Section */}
+            <section className="mt-5">
+              <h4 className="text-center fw-semibold mb-4">
+                <i className="bi bi-clock-history me-2 text-secondary"></i>
+                Previous Orders
+              </h4>
 
-              <div className="table-responsive">
-                <table className="table table-bordered table-hover text-center align-middle fs-6">
+              <div className="table-responsive shadow rounded-3 overflow-hidden">
+                <table
+                  className="table table-hover align-middle text-center"
+                  style={{
+                    borderCollapse: "separate",
+                    borderSpacing: "0 12px", // Adds space between rows
+                    fontSize: "0.95rem",
+                  }}
+                >
                   <thead className="table-secondary">
                     <tr>
                       <th>Order ID</th>
                       <th>Date</th>
-                      <th>Customer Name</th>
-                      <th>Restaurent</th>
-                      <th>Product Price</th>
+                      <th>Customer</th>
+                      <th>Restaurant</th>
+                      <th>Total</th>
                       <th>Payment</th>
-                      <th>Delivery Status</th>
-                      <th>Delivery Boy</th>
+                      <th>Status</th>
+                      <th>Delivery</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>108</td>
-                      <td>12-04-2025</td>
-                      <td>John </td>
-                      <td>Delight Hotel</td>
-                      <td>₹7343</td>
-                      <td>
-                        <span className="badge bg-success">Paid</span>
-                      </td>
-                      <td>
-                        <span className="badge bg-primary">Delivered</span>
-                      </td>
-                      <td>
-                        <i className="bi bi-person-fill-check me-1 text-success"></i>
-                        Sumesh M
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>103</td>
-                      <td>03/04/2025</td>
-                      <td>Sean</td>
-                      <td>Sree Hotel</td>
-                      <td>₹343</td>
-                      <td>
-                        <span className="badge bg-success">Paid</span>
-                      </td>
-                      <td>
-                        <span className="badge bg-primary">Delivered</span>
-                      </td>
-                      <td>
-                        <i className="bi bi-person-fill-check me-1 text-success"></i>
-                        Raj
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>93</td>
-                      <td>23/03/2025</td>
-                      <td>Dean</td>
-                      <td>Delight Hotel</td>
-                      <td>₹313</td>
-                      <td>
-                        <span className="badge bg-danger">Not Paid</span>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">Cancelled</span>
-                      </td>
-                      <td>
-                        <i className="bi bi-person-fill-check me-1 text-success"></i>
-                        Jadhav
-                      </td>
-                    </tr>
+                    {orderDetails.filter((order) =>
+                      ["delivered", "cancelled"].includes(order.deliveryStatus)
+                    ).length > 0 ? (
+                      orderDetails
+                        .filter((order) =>
+                          ["delivered", "cancelled"].includes(
+                            order.deliveryStatus
+                          )
+                        )
+                        .map((order, index) => (
+                          <tr
+                            key={index}
+                            className="bg-white shadow-sm"
+                            style={{
+                              borderRadius: "10px",
+                              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                            }}
+                          >
+                            <td>{order._id.slice(-4).toUpperCase()}</td>
+                            <td>
+                              {new Date(order.createdAt)
+                                .toLocaleDateString("en-IN", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
+                                .replaceAll("/", "-")}{" "}
+                              {new Date(order.createdAt).toLocaleTimeString(
+                                "en-IN",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </td>
+                            <td>{order.address?.name}</td>
+                            <td>{order.cart[0]?.restaurentName || "NA"}</td>
+                            <td>₹{order.totalPrice}</td>
+                            <td>
+                              <span
+                                className={`badge rounded-pill ${
+                                  order.paymentStatus === "cod"
+                                    ? "bg-dark text-white"
+                                    : "bg-success text-white"
+                                }`}
+                              >
+                                {order.paymentStatus === "cod"
+                                  ? "cancelled"
+                                  : "Paid"}
+                              </span>
+                            </td>
+                            <td>
+                              <span
+                                className={`badge shadow-sm rounded-pill ${
+                                  order.deliveryStatus === "delivered"
+                                    ? "bg-success text-white"
+                                    : "bg-danger text-white"
+                                }`}
+                              >
+                                {order.deliveryStatus}
+                              </span>
+                            </td>
+                            <td>
+                              {order.deliveryBoy ? (
+                                <span className="text-success fw-medium">
+                                  <i className="bi bi-person-fill-check me-1"></i>
+                                  {order.deliveryBoy}
+                                </span>
+                              ) : (
+                                <span className="text-danger fw-medium">
+                                  <i className="bi bi-exclamation-triangle me-1"></i>
+                                  Not Taken
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="text-center text-muted py-4">
+                          <i className="bi bi-archive me-2"></i>No previous
+                          orders
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </section>
           </div>
         </div>
       </div>

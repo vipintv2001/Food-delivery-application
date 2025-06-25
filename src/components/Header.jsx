@@ -1,9 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState("");
+  const [userName, setUserName] = useState("");
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("existingUser");
+    localStorage.removeItem("selectedRestaurent");
+    setIsLoggedIn(false);
+    setUserName("");
+    navigate('/home')
+  };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setToken(sessionStorage.getItem("token"));
+      setIsLoggedIn(true);
+      setUserName(JSON.parse(sessionStorage.getItem("existingUser")).name);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,13 +88,48 @@ function Header() {
           <ul className="navbar-nav text-center d-flex flex-row align-items-center">
             <li className="nav-item me-3">
               <Link to="/cart">
-                <i className="fa-solid fa-cart-shopping fs-3 cartlink"></i>
+                <i className="fa-solid fa-cart-shopping fs-3 cartlink me-2"></i>
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/login">
-                <button className="loginbutton">LOG IN</button>
-              </Link>
+
+            <li className="nav-item dropdown">
+              {!isLoggedIn ? (
+                <Link to="/login">
+                  <Link to="/login">
+                    <button className="loginbutton">LOG IN</button>
+                  </Link>
+                </Link>
+              ) : (
+                <>
+                  <button
+                    className="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i className="bi bi-person-fill fs-5"></i>
+                    <span className="fw-semibold">Hi, {userName}</span>
+                  </button>
+
+                  <ul className="dropdown-menu dropdown-menu-end shadow">
+                    <li>
+                      <Link
+                        className="dropdown-item d-flex align-items-center gap-2"
+                        to="/profile"
+                      >
+                        <i className="bi bi-person-circle"></i> Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item d-flex align-items-center gap-2 text-danger"
+                        onClick={handleLogout}
+                      >
+                        <i className="bi bi-box-arrow-right"></i> Log Out
+                      </button>
+                    </li>
+                  </ul>
+                </>
+              )}
             </li>
           </ul>
         </div>

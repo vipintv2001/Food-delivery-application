@@ -1,8 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SuccessModal from "../components/SuccessModal";
+import {
+  deleteCartApi,
+  getUserDetailsApi,
+  setOrderApi,
+} from "../services/allApi";
+import { toast } from "react-toastify";
 
 function Payment() {
   const [show, setShow] = useState(false);
+  const [userDetails, setUserDetails] = useState([]);
+  const [cardDetails, setCardDetails] = useState({
+    email: "",
+    cardNumber: "",
+    expiry: "",
+    cvc: "",
+    cardHolderName: "",
+    coutry: "",
+  });
+
+  const handlePayment = () => {
+    const { email, cardNumber, expiry, cvc, cardHolderName, coutry } =
+      cardDetails;
+    if (
+      !email ||
+      !cardNumber ||
+      !expiry ||
+      !cvc ||
+      !cardHolderName ||
+      !coutry
+    ) {
+      toast.warning("please fill the card details to pay");
+    } else {
+      handleOrderConfirmation();
+    }
+  };
+
+  const handleOrderConfirmation = async () => {
+    console.log("ordered addreess:", userDetails.cartSummary[0].address);
+    const addressDetail = userDetails.cartSummary[0].address;
+    const orderData = {
+      ...addressDetail,
+      totalPrice: userDetails.cartSummary[0].totalPrice,
+      deliCharge: userDetails.cartSummary[0].deliveryCharge,
+      paymentStatus:"card"
+    };
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+    const reqHeader = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    const result = await setOrderApi(orderData, reqHeader);
+    if (result.status === 201) {
+      await deleteCartApi(reqHeader);
+      setShow(true);
+    } else {
+      toast.warning("some error occured");
+    }
+  };
+
+  useEffect(() => {
+    const jwt_token = sessionStorage.getItem("token");
+    if (!jwt_token) return;
+
+    const getUserDetails = async () => {
+      const reqHeader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt_token}`,
+      };
+      const result = await getUserDetailsApi(reqHeader);
+      setUserDetails(result.data);
+      console.log("user result:", result.data);
+    };
+    getUserDetails();
+  }, []);
 
   return (
     <div className="container py-5" style={{ marginTop: "100px" }}>
@@ -16,27 +88,43 @@ function Payment() {
             }}
           >
             <h5 className="fw-bold text-primary mb-3">Order Summary</h5>
-            <h2 className="text-success fw-bold mb-3">₹620.00</h2>
-            <hr />
+            {userDetails.cartSummary && userDetails.cartSummary[0] ? (
+              <>
+                <h2 className="text-success fw-bold mb-3">
+                  {userDetails.cartSummary[0].totalPrice}
+                </h2>
+                <hr />
 
-            <div className="d-flex justify-content-between mb-2">
-              <div>
-                <p className="mb-1 fw-semibold">Subtotal</p>
-                <small className="text-muted">2 items</small>
-              </div>
-              <h6 className="text-dark fw-semibold">₹540</h6>
-            </div>
+                <div className="d-flex justify-content-between mb-2">
+                  <div>
+                    <p className="mb-1 fw-semibold">Subtotal</p>
+                    <small className="text-muted">
+                      {userDetails.cartSummary[0].quantity} items
+                    </small>
+                  </div>
+                  <h6 className="text-dark fw-semibold">
+                    ₹{userDetails.cartSummary[0].subTotal}
+                  </h6>
+                </div>
 
-            <div className="d-flex justify-content-between mt-3">
-              <p className="mb-1 fw-semibold">Delivery Charge</p>
-              <h6 className="text-dark fw-semibold">₹80</h6>
-            </div>
+                <div className="d-flex justify-content-between mt-3">
+                  <p className="mb-1 fw-semibold">Delivery Charge</p>
+                  <h6 className="text-dark fw-semibold">
+                    ₹{userDetails.cartSummary[0].deliveryCharge}
+                  </h6>
+                </div>
 
-            <hr />
-            <div className="d-flex justify-content-between">
-              <strong className="fs-5">Total Payable</strong>
-              <strong className="fs-5 text-success">₹620.00</strong>
-            </div>
+                <hr />
+                <div className="d-flex justify-content-between">
+                  <strong className="fs-5">Total Payable</strong>
+                  <strong className="fs-5 text-success">
+                    ₹{userDetails.cartSummary[0].totalPrice}
+                  </strong>
+                </div>
+              </>
+            ) : (
+              <p>Order Summary Loading....</p>
+            )}
           </div>
         </div>
 
@@ -51,6 +139,9 @@ function Payment() {
                   type="email"
                   placeholder="example@mail.com"
                   className="form-control rounded-pill px-4 py-2"
+                  onChange={(e) =>
+                    setCardDetails({ ...cardDetails, email: e.target.value })
+                  }
                 />
               </div>
 
@@ -60,6 +151,12 @@ function Payment() {
                   type="text"
                   placeholder="1234 5678 9012 3456"
                   className="form-control rounded-pill px-4 py-2"
+                  onChange={(e) =>
+                    setCardDetails({
+                      ...cardDetails,
+                      cardNumber: e.target.value,
+                    })
+                  }
                 />
               </div>
 
@@ -70,6 +167,9 @@ function Payment() {
                     type="text"
                     placeholder="MM/YY"
                     className="form-control rounded-pill px-4 py-2"
+                    onChange={(e) =>
+                      setCardDetails({ ...cardDetails, expiry: e.target.value })
+                    }
                   />
                 </div>
                 <div className="col-md-6">
@@ -78,6 +178,9 @@ function Payment() {
                     type="text"
                     placeholder="123"
                     className="form-control rounded-pill px-4 py-2"
+                    onChange={(e) =>
+                      setCardDetails({ ...cardDetails, cvc: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -88,12 +191,26 @@ function Payment() {
                   type="text"
                   placeholder="Full Name"
                   className="form-control rounded-pill px-4 py-2"
+                  onChange={(e) =>
+                    setCardDetails({
+                      ...cardDetails,
+                      cardHolderName: e.target.value,
+                    })
+                  }
                 />
               </div>
 
               <div className="mb-4">
                 <label className="form-label">Country</label>
-                <select className="form-select rounded-pill px-4 py-2">
+                <select
+                  className="form-select rounded-pill px-4 py-2"
+                  onChange={(e) =>
+                    setCardDetails({ ...cardDetails, coutry: e.target.value })
+                  }
+                >
+                  <option selected disabled>
+                    select Coutry
+                  </option>
                   <option>India</option>
                   <option>United States</option>
                   <option>United Kingdom</option>
@@ -104,9 +221,12 @@ function Payment() {
               <button
                 type="button"
                 className="btn btn-success w-100 fw-bold fs-5 py-3 rounded-pill"
-                onClick={() => setShow(true)}
+                onClick={handlePayment}
               >
-                Pay ₹620.00
+                Pay ₹
+                {userDetails.cartSummary && userDetails.cartSummary[0]
+                  ? userDetails.cartSummary[0].totalPrice
+                  : "0"}
               </button>
             </form>
           </div>

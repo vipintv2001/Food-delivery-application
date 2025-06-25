@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Sidebar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState("home");
   const [name, setName] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("existingUser");
+    setName("");
+    navigate("/");
+  };
 
   useEffect(() => {
     setName(JSON.parse(sessionStorage.getItem("existingUser")).name);
@@ -63,6 +71,20 @@ function Sidebar() {
                 }`}
               >
                 <i className="fa-solid fa-plus me-2"></i> Add Restaurent
+              </h5>
+            </Link>
+            <Link
+              to={"/admindashboard/restaurent"}
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              <h5
+                className={`sidebar_items ${
+                  currentPath === "/admindashboard/restaurent"
+                    ? "active-item"
+                    : ""
+                }`}
+              >
+                <i className="bi bi-shop fs-4 me-2"></i> Restaurents
               </h5>
             </Link>
             <Link
@@ -134,12 +156,7 @@ function Sidebar() {
                 >
                   <li>Profile</li>
                 </Link>
-                <Link
-                  to={"/"}
-                  style={{ textDecoration: "none", color: "white" }}
-                >
-                  <li>Signout</li>
-                </Link>
+                <li onClick={handleLogout}>Signout</li>
               </ul>
             )}
           </div>

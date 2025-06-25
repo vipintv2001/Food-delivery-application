@@ -3,12 +3,14 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import bannerimg from "../assets/landingpageimg.png";
 import "./Home.css";
-import Foodsection from "../components/Foodsection";
 import RestaurentSection from "../components/RestaurentSection";
+import { useLocation } from "react-router-dom";
 
 function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [scrolled, setScrolled] = useState(false);
+
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +20,19 @@ function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (location.hash) {
+      const target = document.querySelector(location.hash);
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth" });
+        }, 100); // small delay ensures DOM is ready
+      }
+    }
+  }, [location]);
+
+
 
   return (
     <>

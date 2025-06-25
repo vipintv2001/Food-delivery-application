@@ -29,6 +29,17 @@ export const addToCartApi = async (reqBody, reqHeader) => {
 export const getCartApi = async (reqHeader)=>{
     return await commonApi("GET",`${baseUrl}/user/cart/get`,"",reqHeader)
 }
+
+//delete cart items
+export const deleteCartItemApi = async (id,reqHeader)=>{
+  return await commonApi("DELETE",`${baseUrl}/user/cart/item/delete/${id}`,{},reqHeader)
+}
+
+//delete entire cart
+export const deleteCartApi = async (reqHeader)=>{
+  return await commonApi("DELETE",`${baseUrl}/user/cart/delete`,{},reqHeader)
+}
+
 //proceed to pay
 export const proceedToPayApi = async (reqBody,reqHeader)=>{
   return await commonApi("PUT",`${baseUrl}/user/cart/edit`,reqBody,reqHeader)
@@ -44,6 +55,10 @@ export const setOrderApi = async (reqBody,reqHeader)=>{
 
 export const getUserOrderDetailsApi = async (reqHeader)=>{
   return await commonApi('GET',`${baseUrl}/user/order/get`,"",reqHeader)
+}
+//cancel order
+export const cancelOrderApi = async (id,reqBody,reqHeader)=>{
+  return await commonApi('PUT',`${baseUrl}/user/order/cancel/${id}`,reqBody,reqHeader)
 }
 
 //admin apis
@@ -63,6 +78,14 @@ export const addNewStaffApi = async (reqBody) => {
 export const getStaffDetailsApi = async () => {
   return await commonApi("GET", `${baseUrl}/admin/getstaff`, "", "");
 };
+//delete restaurent
+export const deleteRestaurentApi = async (id,reqHeader)=>{
+  return await commonApi("DELETE",`${baseUrl}/admin/restaurent/delete/${id}`,{},reqHeader)
+}
+//get all orders
+export const getAllOrderApi = async (reqHeader)=>{
+  return await commonApi("GET",`${baseUrl}/admin/order/get`,"",reqHeader)
+}
 
 //restaurent api
 //add food item
@@ -74,3 +97,26 @@ export const addFoodItemApi = async (reqBody, reqHeader) => {
     reqHeader
   );
 };
+//delete Food Items
+export const deleteFoodItemApi = async (id,reqHeader) =>{
+  return await commonApi("DELETE",`${baseUrl}/restaurent/delete/${id}`,{},reqHeader)
+}
+//edit food items
+export const editFoodItemsApi = async (id,reqBody,reqHeader)=>{
+  return await commonApi("PUT",`${baseUrl}/restaurent/edit/${id}`,reqBody,reqHeader)
+}
+//get restaurent order details
+export const getRestaurentOrderDetailsApi = async (reqHeader) => {
+  return await commonApi("GET", `${baseUrl}/restaurent/order/get`, "", reqHeader);
+};
+
+
+//staff Api
+//set work status
+export const setWorkStatusApi = async (reqBody,reqHeader)=>{
+  return await commonApi("PUT",`${baseUrl}/staff/work/edit`,reqBody,reqHeader)
+}
+//claim order
+export const claimOrderApi = async (id,reqHeader)=>{
+  return await commonApi("PUT",`${baseUrl}/staff/order/claim/${id}`,{},reqHeader)
+}

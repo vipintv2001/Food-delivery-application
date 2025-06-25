@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function RestaurentSidebar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isActive, setIsActive] = useState("home");
   const [restaurentName, setRestaurentName] = useState("");
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (sessionStorage.getItem("existingUser")) {
@@ -14,6 +15,13 @@ function RestaurentSidebar() {
       );
     }
   });
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("existingUser");
+    setRestaurentName("");
+    navigate("/");
+  };
 
   const handleActive = (data) => {
     setIsActive(data);
@@ -128,12 +136,7 @@ function RestaurentSidebar() {
                 >
                   <li>Profile</li>
                 </Link>
-                <Link
-                  to={"/"}
-                  style={{ textDecoration: "none", color: "white" }}
-                >
-                  <li>Signout</li>
-                </Link>
+                <li onClick={handleLogout}>Signout</li>
               </ul>
             )}
           </div>

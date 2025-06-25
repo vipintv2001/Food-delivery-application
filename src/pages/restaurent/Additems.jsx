@@ -13,22 +13,47 @@ function Additems() {
     category: "",
     price: "",
     discount: "",
+    restaurentName: "",
   });
 
+  const restaurentName = JSON.parse(
+    sessionStorage.getItem("existingUser")
+  ).restaurentName;
+  console.log("restaurent", restaurentName);
   const token = sessionStorage.getItem("token");
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     console.log(foodItemDetails);
-    const {productName,productImage,description,category,price,discount} = foodItemDetails;
-    if(!productName || !productImage|| !description || !category || !price || !discount){
-      toast.warning("please fill the form completely")
-    }else{
+    const {
+      productName,
+      productImage,
+      description,
+      category,
+      price,
+      discount,
+    } = foodItemDetails;
+    if (
+      !productName ||
+      !productImage ||
+      !description ||
+      !category ||
+      !price ||
+      !discount
+    ) {
+      toast.warning("please fill the form completely");
+    } else {
+      const finalFoodData = {
+        ...foodItemDetails,
+        restaurentName: restaurentName,
+      };
+
+      console.log("Submitting:", finalFoodData);
       const reqHeader = {
-        "Content-Type":"application/json",
-        Authorization:`Bearer ${token}`
-      }
-      const result = await addFoodItemApi(foodItemDetails,reqHeader)
-      if(result.status===201){
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const result = await addFoodItemApi(finalFoodData, reqHeader);
+      if (result.status === 201) {
         toast.success("product added succesfully");
         setFoodItemDetails({
           productName: "",
@@ -38,10 +63,10 @@ function Additems() {
           price: "",
           discount: "",
         });
-      }else if(result.status===409){
-        toast.warning("product already exists")
-      }else{
-        toast.error("something went wrong")
+      } else if (result.status === 409) {
+        toast.warning("product already exists");
+      } else {
+        toast.error("something went wrong");
       }
     }
   };

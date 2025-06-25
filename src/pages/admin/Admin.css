@@ -118,3 +118,36 @@
   font-size: 2.5rem;
   font-weight: bold;
 }
+
+.table-responsive {
+  padding: 1rem;
+}
+
+.table {
+  border-collapse: separate !important;
+  border-spacing: 0 12px !important;
+}
+
+.table th,
+.table td {
+  padding: 0.9rem 1rem !important;
+  vertical-align: middle;
+}
+
+.table thead th {
+  background-color: #212529;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.table tbody tr {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+}
+
+.table tbody td {
+  border-top: none !important;
+}
