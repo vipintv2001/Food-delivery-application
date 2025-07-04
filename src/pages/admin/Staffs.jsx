@@ -80,13 +80,25 @@ function Staffs() {
                               </span>
                             ) : (
                               <span class="badge bg-secondary">
-                                <i class="bi bi-x-circle-fill me-1"></i>Off
-                                Duty
+                                <i class="bi bi-x-circle-fill me-1"></i>Off Duty
                               </span>
                             )}
                           </td>
                           <td>
-                            <i class="bi bi-truck me-1"></i>On a Delivery
+                            {item.workActivity === "available" ? (
+                              <span>
+                                <i class="bi bi-check-lg"></i>
+                                Available
+                              </span>
+                            ) : item.workActivity === "on a delivery" ? (
+                              <span>
+                                <i class="bi bi-truck me-1"></i>On a Delivery
+                              </span>
+                            ) : (
+                              <span>
+                                <i class="bi bi-dash"></i>
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ))}

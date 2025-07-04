@@ -3,17 +3,15 @@ import Staffsidebar from "../../components/Staffsidebar";
 import { Badge, Button, Card } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "./Staff.css";
-import { setWorkStatusApi } from "../../services/allApi";
+import { getAllOrderApi, setWorkStatusApi } from "../../services/allApi";
 import { toast } from "react-toastify";
 
 function Staffdashboard() {
   const [onDuty, setOnDuty] = useState(false);
   const [name, setName] = useState("");
-
-  useEffect(() => {
-    const stored = JSON.parse(sessionStorage.getItem("existingUser"));
-    if (stored) setName(stored.staffName);
-  }, []);
+  const [orders, setOrders] = useState(0);
+  const [Unclaimed, setUnclaimed] = useState(0);
+  const [deliverisToday, setDeliveriesToday] = useState(0);
 
   const token = sessionStorage.getItem("token");
   const reqHeader = {
@@ -21,6 +19,42 @@ function Staffdashboard() {
     Authorization: `Bearer ${token}`,
   };
 
+  useEffect(() => {
+    const stored = JSON.parse(sessionStorage.getItem("existingUser"));
+    if (stored) {
+      setName(stored.staffName);
+      setOnDuty(stored.workstatus);
+    }
+  }, []);
+
+  const getDetails = async () => {
+    const ordersData = await getAllOrderApi(reqHeader);
+    const allOrders = ordersData.data;
+    const liveOrders = allOrders.filter(
+      (order) =>
+        order.deliveryStatus !== "delivered" &&
+        order.deliveryStatus !== "cancelled"
+    );
+    setOrders(liveOrders.length);
+
+    const UnclaimedOrders = liveOrders.filter((order) => !order.deliveryBoy);
+    setUnclaimed(UnclaimedOrders.length);
+
+    const currentDayOrders = allOrders.filter((order) => {
+      const orderDate = new Date(order.createdAt).toISOString().split("T")[0];
+      const todayDate = new Date().toISOString().split("T")[0];
+      return orderDate === todayDate;
+    });
+    const todaysDeliveries = currentDayOrders.filter(
+      (order) => order.deliveryBoy === name
+    );
+    setDeliveriesToday(todaysDeliveries.length);
+  };
+  useEffect(() => {
+    if (name) {
+      getDetails();
+    }
+  }, [name]);
   const handleOnDuty = async () => {
     const reqBody = {
       workstatus: true,
@@ -30,8 +64,10 @@ function Staffdashboard() {
     console.log("result", result);
     if (result.status === 201) {
       toast.success("marked As On Duty");
+      const user = JSON.parse(sessionStorage.getItem("existingUser"));
+      user.workstatus = true;
+      sessionStorage.setItem("existingUser", JSON.stringify(user));
       setOnDuty(true);
-      sessionStorage.setItem("workStatus", true);
     } else {
       toast.error("something went Wrong");
     }
@@ -46,8 +82,10 @@ function Staffdashboard() {
     console.log("result", result);
     if (result.status === 201) {
       toast.success("marked As Off Duty");
+      const user = JSON.parse(sessionStorage.getItem("existingUser"));
+      user.workstatus = false;
+      sessionStorage.setItem("existingUser", JSON.stringify(user));
       setOnDuty(false);
-      sessionStorage.removeItem("workStatus");
     } else {
       toast.error("something went Wrong");
     }
@@ -131,7 +169,7 @@ function Staffdashboard() {
                     <h5 className="card-title text-primary">Live Orders</h5>
                     <i className="bi bi-truck fs-4 text-primary"></i>
                   </div>
-                  <h2 className="fw-bold text-dark">12</h2>
+                  <h2 className="fw-bold text-dark">{orders}</h2>
                 </Card.Body>
               </Card>
             </div>
@@ -144,7 +182,7 @@ function Staffdashboard() {
                     </h5>
                     <i className="bi bi-hourglass-split fs-4 text-warning"></i>
                   </div>
-                  <h2 className="fw-bold text-dark">5</h2>
+                  <h2 className="fw-bold text-dark">{Unclaimed}</h2>
                 </Card.Body>
               </Card>
             </div>
@@ -157,7 +195,7 @@ function Staffdashboard() {
                     </h5>
                     <i className="bi bi-bag-check-fill fs-4 text-success"></i>
                   </div>
-                  <h2 className="fw-bold text-dark">20</h2>
+                  <h2 className="fw-bold text-dark">{deliverisToday}</h2>
                 </Card.Body>
               </Card>
             </div>

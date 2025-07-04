@@ -120,3 +120,18 @@ export const setWorkStatusApi = async (reqBody,reqHeader)=>{
 export const claimOrderApi = async (id,reqHeader)=>{
   return await commonApi("PUT",`${baseUrl}/staff/order/claim/${id}`,{},reqHeader)
 }
+//get my order
+export const getMyOrderApi = async (reqHeader)=>{
+  return await commonApi("GET",`${baseUrl}/staff/myorder/get`,"",reqHeader)
+}
+//update delivery Status
+export const updateDeliveryStatusApi = async (id,reqBody,reqHeader)=>{
+  return await commonApi("PUT", `${baseUrl}/staff/myorder/edit/deliverystatus/${id}`,reqBody,reqHeader);
+}
+//update pament status
+export const updatePaymentStatusApi = async (id,reqBody,reqHeader) =>{
+  return await commonApi(
+    "PUT",
+    `${baseUrl}/staff/myorder/edit/paymentstatus/${id}`,reqBody,reqHeader
+  );
+}

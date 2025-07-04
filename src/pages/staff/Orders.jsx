@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
+  const [onDuty,setOnDuty] = useState(false)
 
   useEffect(() => {
     const tooltipTriggerList = document.querySelectorAll(
@@ -14,6 +15,13 @@ function Orders() {
       new window.bootstrap.Tooltip(tooltipTriggerEl);
     });
   }, []);
+
+  useEffect(() => {
+      const stored = JSON.parse(sessionStorage.getItem("existingUser"));
+      if (stored) {
+        setOnDuty(stored.workstatus);
+      }
+    }, []);
 
   const token = sessionStorage.getItem("token");
 
@@ -35,7 +43,6 @@ function Orders() {
   }, []);
 
   const handleClaimOrder = async (id) => {
-    const onDuty = sessionStorage.getItem("workStatus");
     if (onDuty) {
       const result = await claimOrderApi(id, reqHeader);
       console.log(result.data);
@@ -59,7 +66,7 @@ function Orders() {
 
           {orders.filter(
             (order) =>
-              !order.deliveryBoy && order.deliveryStatus !== "Cancelled"
+              !order.deliveryBoy && order.deliveryStatus !== "cancelled"
           ).length === 0 ? (
             <div className="text-center text-muted mt-5 fs-5">
               No unclaimed orders available.
@@ -82,7 +89,7 @@ function Orders() {
                     .filter(
                       (order) =>
                         !order.deliveryBoy &&
-                        order.deliveryStatus !== "Cancelled"
+                        order.deliveryStatus !== "cancelled"
                     )
                     .map((order) => (
                       <tr key={order._id}>

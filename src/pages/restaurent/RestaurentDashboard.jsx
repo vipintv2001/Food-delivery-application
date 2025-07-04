@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import RestaurentSidebar from "../../components/RestaurentSidebar";
+import { getRestaurentOrderDetailsApi } from "../../services/allApi";
 
 function RestaurentDashboard() {
   const [restaurentName, setRestaurentName] = useState("");
+  const [orders, setOrders] = useState(0);
+  const [ongoingOrders, setOngoingOrders] = useState(0);
+  const [completedOrders, setCompletedOrders] = useState(0);
+  const [todaysRevenue, setTodaysRevenue] = useState(0);
+  const token = sessionStorage.getItem("token");
+
+  const reqHeader = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem("existingUser")) {
@@ -11,6 +22,36 @@ function RestaurentDashboard() {
       );
     }
   });
+
+  const getDetails = async () => {
+    const restaurentOrders = await getRestaurentOrderDetailsApi(reqHeader);
+    const currentDayOrders = restaurentOrders.data.filter((order) => {
+      const orderDate = new Date(order.createdAt).toISOString().split("T")[0];
+      const todayDate = new Date().toISOString().split("T")[0];
+      return orderDate === todayDate;
+    });
+    setOrders(currentDayOrders.length);
+    const liveOrders = restaurentOrders.data.filter(
+      (order) =>
+        order.deliveryStatus !== "delivered" &&
+        order.deliveryStatus !== "cancelled"
+    ).length;
+    setOngoingOrders(liveOrders);
+    const deliveredOrders = currentDayOrders.length - liveOrders;
+    setCompletedOrders(deliveredOrders);
+
+    const paidOrders = currentDayOrders.filter(
+      (orders) => orders.paymentStatus === "card"
+    );
+    const totalRevenue = paidOrders?paidOrders.reduce((acc, curr) => {
+      return acc + curr.totalPrice;
+    }, 0):0;
+    setTodaysRevenue(totalRevenue);
+  };
+
+  useEffect(() => {
+    getDetails();
+  }, []);
   return (
     <>
       <div className="dashboard">
@@ -39,7 +80,7 @@ function RestaurentDashboard() {
                       </h6>
                       <i className="bi bi-receipt fs-4 text-primary"></i>
                     </div>
-                    <h2 className="fw-bold text-dark">48</h2>
+                    <h2 className="fw-bold text-dark">{orders}</h2>
                   </div>
                 </div>
               </div>
@@ -53,7 +94,7 @@ function RestaurentDashboard() {
                       </h6>
                       <i className="bi bi-hourglass-split fs-4 text-warning"></i>
                     </div>
-                    <h2 className="fw-bold text-dark">7</h2>
+                    <h2 className="fw-bold text-dark">{ongoingOrders}</h2>
                   </div>
                 </div>
               </div>
@@ -67,7 +108,7 @@ function RestaurentDashboard() {
                       </h6>
                       <i className="bi bi-check-circle-fill fs-4 text-success"></i>
                     </div>
-                    <h2 className="fw-bold text-dark">39</h2>
+                    <h2 className="fw-bold text-dark">{completedOrders}</h2>
                   </div>
                 </div>
               </div>
@@ -79,7 +120,7 @@ function RestaurentDashboard() {
                       <h6 className="card-title text-info">Revenue Today</h6>
                       <i className="bi bi-currency-rupee fs-4 text-info"></i>
                     </div>
-                    <h2 className="fw-bold text-dark">₹8,450</h2>
+                    <h2 className="fw-bold text-dark">₹{todaysRevenue}</h2>
                   </div>
                 </div>
               </div>
