@@ -76,7 +76,6 @@ function Foodcard({ foodItem }) {
               const result = await addToCartApi(foodItem, reqHeader);
               if (result.status === 201) {
                 toast.success("Item added to cart");
-                navigate("/cart");
               } else {
                 toast.error("something went wrong");
               }
@@ -93,7 +92,6 @@ function Foodcard({ foodItem }) {
         const result = await addToCartApi(foodItem, reqHeader);
         if (result.status === 201) {
           toast.success("Item added to cart");
-          navigate("/cart");
         } else {
           toast.error("something went wrong");
         }
@@ -101,7 +99,6 @@ function Foodcard({ foodItem }) {
         const result = await addToCartApi(foodItem, reqHeader);
         if (result.status === 201) {
           toast.success("Item added to cart");
-          navigate("/cart");
         } else {
           toast.error("something went wrong");
         }

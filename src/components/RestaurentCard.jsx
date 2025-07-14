@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
+import { baseUrl } from "../services/baseUrl";
 
 function RestaurentCard({ restaurent }) {
   const rating = 4;
@@ -16,7 +17,7 @@ function RestaurentCard({ restaurent }) {
     >
       <Card.Img
         variant="top"
-        src={restaurent.restaurentImage}
+        src={`${baseUrl}/uploads/${restaurent.restaurentImage}`}
         style={{
           height: "260px", // increased from 200px
           objectFit: "cover",

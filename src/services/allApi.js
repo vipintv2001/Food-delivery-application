@@ -60,11 +60,20 @@ export const getUserOrderDetailsApi = async (reqHeader)=>{
 export const cancelOrderApi = async (id,reqBody,reqHeader)=>{
   return await commonApi('PUT',`${baseUrl}/user/order/cancel/${id}`,reqBody,reqHeader)
 }
+//post review
+export const submittReviewApi = async (reqBody,reqHeader)=>{
+  return await commonApi('POST',`${baseUrl}/user/review/submit`,reqBody,reqHeader)
+}
+//get Review
+export const getReviewApi = async (id)=>{
+  return await commonApi("GET", `${baseUrl}/restaurent/review/get/${id}`,"","");
+}
+
 
 //admin apis
 //add restaurent
-export const addRestaurentApi = async (reqBody) => {
-  return await commonApi("POST", `${baseUrl}/admin/addrestaurent`, reqBody, "");
+export const addRestaurentApi = async (reqBody,reqHeader) => {
+  return await commonApi("POST", `${baseUrl}/admin/addrestaurent`, reqBody, reqHeader);
 };
 //get customer details
 export const getCustomerDetailsApi = async () => {

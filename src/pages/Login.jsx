@@ -70,6 +70,7 @@ function Login() {
         toast.warning("invalid email or password");
       } else {
         toast.error("something went wrong");
+        console.log("result:",result.data)
       }
     }
   };

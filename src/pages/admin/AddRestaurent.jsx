@@ -11,7 +11,7 @@ function AddRestaurent() {
     name: "",
     resImage: "",
     description: "",
-    cardDescription:'',
+    cardDescription: "",
     categories: [],
     foodTypes: [],
     openingHours: "",
@@ -19,7 +19,10 @@ function AddRestaurent() {
     lattitude: "",
     longitude: "",
     password: "",
+    email: "",
   });
+
+  const token = sessionStorage.getItem("token");
 
   const handleCheckbox = (e, field) => {
     const { value, checked } = e.target;
@@ -58,6 +61,7 @@ function AddRestaurent() {
       lattitude,
       longitude,
       password,
+      email,
     } = restaurentDetails;
     if (
       !name ||
@@ -70,18 +74,38 @@ function AddRestaurent() {
       !location ||
       !lattitude ||
       !longitude ||
-      !password
+      !password ||
+      !email
     ) {
       toast.warning("Please fill the form completely");
     } else {
-      const result = await addRestaurentApi(restaurentDetails);
-      if(result.status===201){
-        toast.success("Restaurent Added Successfully")
+      const reqBody = new FormData();
+      reqBody.append("name", name);
+      reqBody.append("resImage", resImage);
+      reqBody.append("description", description);
+      reqBody.append("cardDescription", cardDescription);
+      reqBody.append("categories", categories);
+      reqBody.append("foodTypes", foodTypes);
+      reqBody.append("openingHours", openingHours);
+      reqBody.append("location", location);
+      reqBody.append("lattitude", lattitude);
+      reqBody.append("longitude", longitude);
+      reqBody.append("password", password);
+      reqBody.append("email", email);
+
+      const reqHeader = {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      };
+
+      const result = await addRestaurentApi(reqBody, reqHeader);
+      if (result.status === 201) {
+        toast.success("Restaurent Added Successfully");
         setRestaurentDetails({
           name: "",
           resImage: "",
           description: "",
-          cardDescription:"",
+          cardDescription: "",
           categories: [],
           foodTypes: [],
           openingHours: "",
@@ -89,11 +113,12 @@ function AddRestaurent() {
           lattitude: "",
           longitude: "",
           password: "",
+          email: "",
         });
-      }else if(result.status===409){
-        toast.warning("restaurent already exists")
-      }else{
-        toast.error("something went wrong")
+      } else if (result.status === 409) {
+        toast.warning("restaurent already exists");
+      } else {
+        toast.error("something went wrong");
       }
     }
   };
@@ -131,22 +156,24 @@ function AddRestaurent() {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Image URL</label>
+                <label className="form-label fw-semibold">
+                  Restaurent Image
+                </label>
                 <div className="input-group">
                   <span className="input-group-text">
                     <i className="bi bi-image-fill"></i>
                   </span>
                   <input
-                    type="text"
+                    type="file"
                     className="form-control"
-                    placeholder="Enter image link"
+                    placeholder="Upload the Image"
                     onChange={(e) =>
                       setRestaurentDetails({
                         ...restaurentDetails,
-                        resImage: e.target.value,
+                        resImage: e.target.files[0],
                       })
                     }
-                    value={restaurentDetails.resImage}
+                    // value={restaurentDetails.resImage}
                   />
                 </div>
               </div>
@@ -168,9 +195,10 @@ function AddRestaurent() {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Card Description</label>
+                <label className="form-label fw-semibold">
+                  Card Description
+                </label>
                 <div className="input-group">
-                  
                   <input
                     type="text"
                     className="form-control"
@@ -286,6 +314,22 @@ function AddRestaurent() {
                   Restaurent Location
                 </label>
                 <RestaurentAddress onSelect={handleCoordinate} />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold">Email Id</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter Restaurent email"
+                  onChange={(e) =>
+                    setRestaurentDetails({
+                      ...restaurentDetails,
+                      email: e.target.value,
+                    })
+                  }
+                  value={restaurentDetails.email}
+                />
               </div>
 
               <div className="mb-3">

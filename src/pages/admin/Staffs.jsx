@@ -68,7 +68,7 @@ function Staffs() {
                       staffDetails.map((item, index) => (
                         <tr>
                           <td>{index + 1}</td>
-                          <td>{item._id}</td>
+                          <td>{item._id.slice(-6)}</td>
                           <td>{item.staffName}</td>
                           <td>{item.phone}</td>
                           <td>{item.email}</td>

@@ -43,7 +43,8 @@ function Payment() {
       ...addressDetail,
       totalPrice: userDetails.cartSummary[0].totalPrice,
       deliCharge: userDetails.cartSummary[0].deliveryCharge,
-      paymentStatus:"card"
+      paymentStatus: "card",
+      duration: userDetails.cartSummary[0].estimatedTime,
     };
     const token = sessionStorage.getItem("token");
     if (!token) return;
@@ -70,7 +71,7 @@ function Payment() {
         Authorization: `Bearer ${jwt_token}`,
       };
       const result = await getUserDetailsApi(reqHeader);
-      setUserDetails(result.data);
+      setUserDetails(result.data.userDetails);
       console.log("user result:", result.data);
     };
     getUserDetails();
@@ -132,7 +133,12 @@ function Payment() {
           <div className="p-4 bg-white rounded-4 shadow-lg">
             <h5 className="fw-bold text-primary mb-4">Pay with Card</h5>
 
-            <form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handlePayment();
+              }}
+            >
               <div className="mb-3">
                 <label className="form-label">Email</label>
                 <input
@@ -151,6 +157,10 @@ function Payment() {
                   type="text"
                   placeholder="1234 5678 9012 3456"
                   className="form-control rounded-pill px-4 py-2"
+                  minLength="16"
+                  maxLength="16"
+                  pattern="\d{16}"
+                  title="Enter a 16-digit card number"
                   onChange={(e) =>
                     setCardDetails({
                       ...cardDetails,
@@ -167,6 +177,7 @@ function Payment() {
                     type="text"
                     placeholder="MM/YY"
                     className="form-control rounded-pill px-4 py-2"
+                    pattern="(0[1-9]|1[0-2])\/\d{2}"
                     onChange={(e) =>
                       setCardDetails({ ...cardDetails, expiry: e.target.value })
                     }
@@ -178,6 +189,9 @@ function Payment() {
                     type="text"
                     placeholder="123"
                     className="form-control rounded-pill px-4 py-2"
+                    minLength="3"
+                    maxLength="3"
+                    pattern="\d{3}"
                     onChange={(e) =>
                       setCardDetails({ ...cardDetails, cvc: e.target.value })
                     }
@@ -191,6 +205,7 @@ function Payment() {
                   type="text"
                   placeholder="Full Name"
                   className="form-control rounded-pill px-4 py-2"
+                  minLength="3"
                   onChange={(e) =>
                     setCardDetails({
                       ...cardDetails,
@@ -204,6 +219,7 @@ function Payment() {
                 <label className="form-label">Country</label>
                 <select
                   className="form-select rounded-pill px-4 py-2"
+                  defaultValue=""
                   onChange={(e) =>
                     setCardDetails({ ...cardDetails, coutry: e.target.value })
                   }
@@ -219,9 +235,8 @@ function Payment() {
               </div>
 
               <button
-                type="button"
+                type="submit"
                 className="btn btn-success w-100 fw-bold fs-5 py-3 rounded-pill"
-                onClick={handlePayment}
               >
                 Pay ₹
                 {userDetails.cartSummary && userDetails.cartSummary[0]

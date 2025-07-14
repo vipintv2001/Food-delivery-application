@@ -56,7 +56,7 @@ function Customer() {
                   customerDetails.map((item, index) => (
                     <tr className="align-middle">
                       <td>{index + 1}</td>
-                      <td>{item._id}</td>
+                      <td>{item._id.slice(-4)}</td>
                       <td>{item.name}</td>
                       <td>{item.phone}</td>
                       <td>{item.email}</td>

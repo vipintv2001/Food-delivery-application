@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
-import { getAllOrderApi } from "../../services/allApi";
+import { getAllOrderApi } from "../../services/allApi";;
 
 function Trackorder() {
   const [orderDetails, setOrderDeatails] = useState([]);

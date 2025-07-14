@@ -5,6 +5,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom center;
+  position: relative;
 }
 
 .landingpage_background .overlay {
@@ -22,6 +23,8 @@
   z-index: 2;
   margin-top: 12rem;
   margin-left: 4rem;
+  max-width: 90%;
+  width: 100%;
 }
 
 .landingpage_background nav {
@@ -39,6 +42,8 @@
 .landingpage_background nav .buttons {
   margin-top: 8px;
   margin-right: 18px;
+  display: flex;
+  gap: 10px;
 }
 
 .landingpage_background nav .loginbutton {
@@ -50,4 +55,78 @@
 
 .landingpage_background nav .signupbutton {
   margin-top: 15px;
+}
+
+/* Responsive Queries */
+
+@media (max-width: 992px) {
+  .landingpage_background nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .landingpage_background .content {
+    margin-top: 8rem;
+    margin-left: 1rem;
+    padding: 1rem;
+  }
+
+  .landingpage_background h1 {
+    font-size: 48px;
+  }
+
+  .landingpage_background h5 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .landingpage_background h1 {
+    font-size: 36px;
+  }
+
+  .landingpage_background .loginbutton {
+    padding: 8px 20px;
+    font-size: 18px;
+  }
+
+  .landingpage_background .signupbutton {
+    font-size: 16px;
+  }
+
+  .landingpage_background .content {
+    margin-top: 6rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .landingpage_background .content {
+    margin-top: 4rem;
+    margin-left: 1rem;
+    padding: 0.5rem;
+  }
+
+  .landingpage_background h1 {
+    font-size: 28px;
+  }
+
+  .landingpage_background h5 {
+    font-size: 14px;
+  }
+
+  .landingpage_background .loginbutton {
+    padding: 6px 16px;
+    font-size: 16px;
+  }
+
+  .landingpage_background .btn-success {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .landingpage_background .signupbutton {
+    font-size: 14px;
+  }
 }

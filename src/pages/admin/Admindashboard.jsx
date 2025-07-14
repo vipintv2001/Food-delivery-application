@@ -7,6 +7,7 @@ import {
   getRestaurentApi,
   getStaffDetailsApi,
 } from "../../services/allApi";
+import AdminReport from "./AdminReport";
 
 function Admindashboard() {
   const token = sessionStorage.getItem("token");
@@ -17,6 +18,7 @@ function Admindashboard() {
   const [order, setorders] = useState(0);
   const [orderToday, setOrderToday] = useState(0);
   const [currentDayRevenue, setCurrentDayRevenue] = useState(0);
+  const [AlltodaysOrder, setAllTodayOrder] = useState([]);
 
   const reqHeader = {
     "Content-Type": "application/json",
@@ -52,17 +54,15 @@ function Admindashboard() {
             .split("T")[0];
           const todayDate = new Date().toISOString().split("T")[0];
           return orderDate === todayDate;
-        }).length;
-        setOrderToday(todaysOrder);
-
-        const currentDayOrders = allOrders.filter((order) => {
-          const orderDate = new Date(order.createdAt)
-            .toISOString()
-            .split("T")[0];
-          const todayDate = new Date().toISOString().split("T")[0];
-          return orderDate === todayDate;
         });
-        const todaysRevenue = currentDayOrders.reduce((acc, curr) => {
+        const validOrders = todaysOrder.filter((order)=>(
+          order.deliveryStatus!=="cancelled"
+        ))
+
+        setOrderToday(validOrders.length);
+        setAllTodayOrder(validOrders);
+
+        const todaysRevenue = validOrders.reduce((acc, curr) => {
           return acc + curr.totalPrice;
         }, 0);
         setCurrentDayRevenue(todaysRevenue);
@@ -72,6 +72,7 @@ function Admindashboard() {
     };
     getDetails();
   }, []);
+
   return (
     <>
       <div className="dashboard">
@@ -142,34 +143,6 @@ function Admindashboard() {
                         <div className="card-text">
                           <p>Toatl Orders Today:</p>
                           <h1>{orderToday}</h1>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Most Ordered Item */}
-                <div className="row mt-5">
-                  <div className="col-md-6 col-lg-6">
-                    <div className="card shadow-lg">
-                      <div className="row g-0">
-                        <div className="col-md-4">
-                          <img
-                            src="https://www.licious.in/blog/wp-content/uploads/2022/06/chicken-hyderabadi-biryani-01.jpg"
-                            className="img-fluid rounded-start"
-                            alt="Most Ordered Food"
-                          />
-                        </div>
-                        <div className="col-md-8">
-                          <div className="card-body">
-                            <h5 className="card-title">Most Ordered Item</h5>
-                            <p className="card-text mb-1">
-                              <strong>Item:</strong> Chicken Biryani
-                            </p>
-                            <p className="card-text">
-                              <strong>Orders:</strong> 84
-                            </p>
-                          </div>
                         </div>
                       </div>
                     </div>

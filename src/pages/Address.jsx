@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Header from "../components/Header";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -20,9 +20,11 @@ function Address() {
   const [show, setShow] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [userDetails, setUserDetails] = useState([]);
-  const [isAddress,setIsAddress] = useState(false);
+  const [isAddress, setIsAddress] = useState(false);
+  const [restaurant,setRestaurent] = useState([]);
   const navigate = useNavigate();
 
   const [addressData, setAddressData] = useState({
@@ -34,8 +36,9 @@ function Address() {
     landmark: "",
     deliCharge: "",
     totalPrice: "",
+    duration:""
   });
-  const handleAddressSelect = (addressDetails, dist) => {
+  const handleAddressSelect = (addressDetails, dist, duration) => {
     setAddressData({
       house: addressDetails.house || "",
       street: addressDetails.street || "",
@@ -45,7 +48,9 @@ function Address() {
       landmark: addressDetails.landmark || "",
     });
     setDistance(dist);
+    setDuration(duration);
     console.log("distance=", dist);
+    console.log("duration:", duration);
   };
 
   const handleClose = () => setShow(false);
@@ -65,7 +70,7 @@ function Address() {
     }
   };
 
-  const chargePerKm = 20;
+  const chargePerKm = 10;
   const deliveryCharge = Math.floor(chargePerKm * distance);
 
   useEffect(() => {
@@ -78,8 +83,10 @@ function Address() {
         Authorization: `Bearer ${jwt_token}`,
       };
       const result = await getUserDetailsApi(reqHeader);
-      setUserDetails(result.data);
-      console.log("user result:", result.data);
+      setUserDetails(result.data.userDetails);
+      console.log("user result:", result.data.userDetails);
+      console.log("restaurent", result.data.restaurentDetails);
+      setRestaurent(result.data.restaurentDetails);
     };
     getUserDetails();
   }, []);
@@ -94,6 +101,7 @@ function Address() {
         ...addressData,
         deliCharge: deliveryCharge,
         totalPrice: deliveryCharge + userDetails.cartSummary[0].subTotal,
+        duration:duration
       });
       console.log("address:", addressData);
       toast.success("address saved Succesfully");
@@ -126,6 +134,7 @@ function Address() {
             city: addressData.city,
             landMark: addressData.landmark,
           },
+          estimatedTime: duration,
         },
       ];
       console.log("req Body", reqBody);
@@ -142,7 +151,7 @@ function Address() {
 
   const handleOrderConfirmation = async () => {
     console.log("ordered addreess:", addressData);
-    const orderData = {...addressData,paymentStatus:"cod"}
+    const orderData = { ...addressData, paymentStatus: "cod" };
     const token = sessionStorage.getItem("token");
     if (!token) return;
     const reqHeader = {
@@ -173,7 +182,13 @@ function Address() {
               <label className="form-label fw-semibold">
                 Delivery Location
               </label>
-              <AddressSelector onSelect={handleAddressSelect} />
+              <AddressSelector
+                onSelect={handleAddressSelect}
+                restaurantLocation={[
+                  restaurant.lattitude,
+                  restaurant.longitude,
+                ]}
+              />
               <form className="p-3">
                 <div className="mb-4">
                   <h6 className="fw-semibold text-secondary mb-3">

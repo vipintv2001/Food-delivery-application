@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import RestaurentSidebar from "../../components/RestaurentSidebar";
 import { getRestaurentOrderDetailsApi } from "../../services/allApi";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import RestaurentReport from "./RestaurentReport";
 
 function RestaurentDashboard() {
   const [restaurentName, setRestaurentName] = useState("");
   const [orders, setOrders] = useState(0);
+  const [todaysOrder, setTodayOrder] = useState([]);
   const [ongoingOrders, setOngoingOrders] = useState(0);
   const [completedOrders, setCompletedOrders] = useState(0);
   const [todaysRevenue, setTodaysRevenue] = useState(0);
@@ -31,6 +35,8 @@ function RestaurentDashboard() {
       return orderDate === todayDate;
     });
     setOrders(currentDayOrders.length);
+    setTodayOrder(currentDayOrders);
+    console.log("todays order", currentDayOrders);
     const liveOrders = restaurentOrders.data.filter(
       (order) =>
         order.deliveryStatus !== "delivered" &&
@@ -43,15 +49,18 @@ function RestaurentDashboard() {
     const paidOrders = currentDayOrders.filter(
       (orders) => orders.paymentStatus === "card"
     );
-    const totalRevenue = paidOrders?paidOrders.reduce((acc, curr) => {
-      return acc + curr.totalPrice;
-    }, 0):0;
+    const totalRevenue = paidOrders
+      ? paidOrders.reduce((acc, curr) => {
+          return acc + curr.cartSummary[0].subTotal;
+        }, 0)
+      : 0;
     setTodaysRevenue(totalRevenue);
   };
 
   useEffect(() => {
     getDetails();
   }, []);
+
   return (
     <>
       <div className="dashboard">
@@ -117,7 +126,7 @@ function RestaurentDashboard() {
                 <div className="card shadow h-100">
                   <div className="card-body">
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                      <h6 className="card-title text-info">Revenue Today</h6>
+                      <h6 className="card-title text-info">Total Price</h6>
                       <i className="bi bi-currency-rupee fs-4 text-info"></i>
                     </div>
                     <h2 className="fw-bold text-dark">₹{todaysRevenue}</h2>

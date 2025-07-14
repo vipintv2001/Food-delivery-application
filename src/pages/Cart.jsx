@@ -78,7 +78,7 @@ function Cart() {
         Authorization: `Bearer ${jwt_token}`,
       };
       const productQuantity = totalQuantity;
-      const gst = Math.floor((totalPrice * 12) / 100);
+      const gst = Math.floor((totalPrice * 5) / 100);
       const subTotal = Math.floor(totalPrice + (totalPrice * 12) / 100);
       const reqBody = [
         cartDetails,
@@ -176,25 +176,27 @@ function Cart() {
               <p className="text-muted">Review items and proceed to checkout</p>
             </div>
             <div className="d-flex justify-content-center mt-4 mb-4">
-              <div
-                className="d-flex align-items-center gap-3 p-3 rounded-4 shadow-sm border border-secondary-subtle"
-                style={{
-                  backgroundColor: "#f8f9fa",
-                  maxWidth: "600px",
-                  width: "100%",
-                }}
-              >
+              {cartDetails.length > 0 && (
                 <div
-                  className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
-                  style={{ width: "45px", height: "45px" }}
+                  className="d-flex align-items-center gap-3 p-3 rounded-4 shadow-sm border border-secondary-subtle"
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    maxWidth: "600px",
+                    width: "100%",
+                  }}
                 >
-                  <i className="bi bi-shop fs-4"></i>
+                  <div
+                    className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+                    style={{ width: "45px", height: "45px" }}
+                  >
+                    <i className="bi bi-shop fs-4"></i>
+                  </div>
+                  <div>
+                    <h6 className="fw-semibold text-dark mb-1">Restaurant</h6>
+                    <p className="mb-0 fs-6 text-secondary">{restaurentName}</p>
+                  </div>
                 </div>
-                <div>
-                  <h6 className="fw-semibold text-dark mb-1">Restaurant</h6>
-                  <p className="mb-0 fs-6 text-secondary">{restaurentName}</p>
-                </div>
-              </div>
+              )}
             </div>
 
             {cartDetails.length > 0 ? (
@@ -286,8 +288,8 @@ function Cart() {
                         Subtotal <span>₹ {totalPrice}</span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between">
-                        GST (12%){" "}
-                        <span>₹ {Math.floor((totalPrice * 12) / 100)}</span>
+                        GST (5%){" "}
+                        <span>₹ {Math.floor((totalPrice * 5) / 100)}</span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between fw-bold text-primary">
                         Total{" "}

@@ -108,7 +108,7 @@ function Orders() {
 
                     const estDeliveryTime = new Date(order.createdAt);
                     estDeliveryTime.setMinutes(
-                      estDeliveryTime.getMinutes() + 45
+                      estDeliveryTime.getMinutes() + order.estimatedTime + 15
                     );
 
                     return (
@@ -224,7 +224,7 @@ function Orders() {
                           {/* Charges */}
                           <div className="mt-3 pt-3 px-2 border-top">
                             <p className="mb-1">
-                              <strong>GST (12%):</strong>
+                              <strong>GST (5%):</strong>
                               <span className="fs-6 fw-bolder ms-2">
                                 ₹{order.cartSummary[0].gst}
                               </span>

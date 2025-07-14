@@ -194,7 +194,7 @@ function Myorders() {
 
                       <p className="mb-1">
                         <strong>🏬 Restaurant:</strong>{" "}
-                        {order.restaurantName || "N/A"}
+                        {order.cart[0].restaurentName}
                       </p>
                       <p className="mb-1">
                         <strong>👤 Customer:</strong> {order.address.name}

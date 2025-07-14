@@ -16,18 +16,21 @@ function Footer() {
             <h5 className="fw-bold">Quick Links</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="/" className="text-muted text-decoration-none">
+                <a href="/home" className="text-muted text-decoration-none">
                   Home
                 </a>
               </li>
               <li>
-                <a href="/menu" className="text-muted text-decoration-none">
-                  Menu
+                <a
+                  href="/home#restaurent"
+                  className="text-muted text-decoration-none"
+                >
+                  Restaurents
                 </a>
               </li>
               <li>
-                <a href="/about" className="text-muted text-decoration-none">
-                  About Us
+                <a href="/orders" className="text-muted text-decoration-none">
+                  Orders
                 </a>
               </li>
               <li>

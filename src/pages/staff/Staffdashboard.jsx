@@ -12,12 +12,24 @@ function Staffdashboard() {
   const [orders, setOrders] = useState(0);
   const [Unclaimed, setUnclaimed] = useState(0);
   const [deliverisToday, setDeliveriesToday] = useState(0);
+  const [ordersToday, setordersToday] = useState([]);
+  const [ordersWeekly, setOrdersWeekly] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const reqHeader = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
+
+  const dailyEarnings = ordersToday.reduce(
+    (sum, curr) => sum + curr.deliveryCharge * 0.7,
+    0
+  );
+
+  const weeklyEarnings = ordersWeekly.reduce(
+    (sum, curr) => sum + curr.deliveryCharge * 0.7,
+    0
+  );
 
   useEffect(() => {
     const stored = JSON.parse(sessionStorage.getItem("existingUser"));
@@ -45,10 +57,36 @@ function Staffdashboard() {
       const todayDate = new Date().toISOString().split("T")[0];
       return orderDate === todayDate;
     });
-    const todaysDeliveries = currentDayOrders.filter(
+    const validCurrentDayOrder = currentDayOrders.filter(
+      (order) => order.deliveryStatus !== "cancelled"
+    );
+    const todaysDeliveries = validCurrentDayOrder.filter(
       (order) => order.deliveryBoy === name
     );
+
+    const staffDeliveries = allOrders.filter(
+      (order) => order.deliveryBoy === name
+    );
+    setordersToday(todaysDeliveries);
     setDeliveriesToday(todaysDeliveries.length);
+
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    const weeklyOrders = staffDeliveries.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate >= startOfWeek && orderDate <= endOfWeek;
+    });
+    const validCurrentWeekOrder = weeklyOrders.filter(
+      (order) => order.deliveryStatus !== "cancelled"
+    );
+    setOrdersWeekly(validCurrentWeekOrder);
   };
   useEffect(() => {
     if (name) {
@@ -160,7 +198,6 @@ function Staffdashboard() {
             </div>
           </div>
 
-          {/* Summary Cards */}
           <div className="row g-4">
             <div className="col-md-6 col-lg-4">
               <Card className="shadow h-100">
@@ -198,6 +235,43 @@ function Staffdashboard() {
                   <h2 className="fw-bold text-dark">{deliverisToday}</h2>
                 </Card.Body>
               </Card>
+            </div>
+            {/* Earnings Section */}
+            <div className="mt-4">
+              <h4 className="fw-bold text-dark mb-3">Earnings Summary</h4>
+              <div className="row g-4">
+                {/* Daily Earnings */}
+                <div className="col-md-6 col-lg-4">
+                  <Card className="shadow h-100">
+                    <Card.Body>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h5 className="card-title text-info">Daily Earnings</h5>
+                        <i className="bi bi-currency-rupee fs-4 text-info"></i>
+                      </div>
+                      <h2 className="fw-bold text-dark">
+                        ₹{dailyEarnings.toFixed(2)}
+                      </h2>
+                    </Card.Body>
+                  </Card>
+                </div>
+
+                {/* Weekly Earnings */}
+                <div className="col-md-6 col-lg-4">
+                  <Card className="shadow h-100">
+                    <Card.Body>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h5 className="card-title text-success">
+                          Weekly Earnings
+                        </h5>
+                        <i className="bi bi-bar-chart-line-fill fs-4 text-success"></i>
+                      </div>
+                      <h2 className="fw-bold text-dark">
+                        ₹{weeklyEarnings.toFixed(2)}
+                      </h2>
+                    </Card.Body>
+                  </Card>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 import { deleteRestaurentApi } from "../services/allApi";
 import { toast } from "react-toastify";
+import { baseUrl } from "../services/baseUrl";
 
 function AdminRestaurentCard({ restaurent, onDelete }) {
   console.log("res", restaurent);
@@ -34,7 +35,7 @@ function AdminRestaurentCard({ restaurent, onDelete }) {
         <Card style={{ width: "16rem" }} className="foodcard shadow mt-3">
           <Card.Img
             variant="top"
-            src={restaurent.restaurentImage}
+            src={`${baseUrl}/uploads/${restaurent.restaurentImage}`}
             width={"100%"}
             style={{ height: "11rem" }}
           />
