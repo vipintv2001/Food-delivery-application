@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import AdminRestaurentCard from "../../components/AdminRestaurentCard";
 import { getRestaurentApi } from "../../services/allApi";
-import LoadingScreen from "../../components/LoadingScreen";
 
 function ViewRestaurent() {
   const [restaurentDetails, setRestaurentDetails] = useState([]);

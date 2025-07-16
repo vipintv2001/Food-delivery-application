@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import { getStaffEarningsReportApi } from "../../services/allApi"; // Your API
-import { Button, Table } from "react-bootstrap";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import Staffsidebar from "../../components/Staffsidebar";
+import { Table } from "react-bootstrap";
 import { getAllOrderApi, getMyOrderApi } from "../../services/allApi";
 import Sidebar from "../../components/Sidebar";
 import AdminReport from "./AdminReport";

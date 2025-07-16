@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./admin.css";
+import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
 import {
   getAllOrderApi,
@@ -7,7 +7,6 @@ import {
   getRestaurentApi,
   getStaffDetailsApi,
 } from "../../services/allApi";
-import AdminReport from "./AdminReport";
 import LoadingSpinner from "../../components/LoginSpinner";
 
 function Admindashboard() {

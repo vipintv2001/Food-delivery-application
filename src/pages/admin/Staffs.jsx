@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import "./Admin.css";
 import Sidebar from "../../components/Sidebar";
 import AddStaffButton from "../../components/AddStaffButton";
 import { getStaffDetailsApi } from "../../services/allApi";
