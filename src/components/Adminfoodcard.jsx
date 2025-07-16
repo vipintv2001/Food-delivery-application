@@ -8,33 +8,33 @@ import Editfooditem from "./Editfooditem";
 import { deleteFoodItemApi } from "../services/allApi";
 import { toast } from "react-toastify";
 
-function Adminfoodcard({ food,onDelete }) {
+function Adminfoodcard({ food, onDelete }) {
   const [showDelete, setShowDelete] = useState(false);
 
   const handleDeleteClose = () => setShowDelete(false);
   const handleDeleteShow = () => setShowDelete(true);
-  const token= sessionStorage.getItem("token")
+  const token = sessionStorage.getItem("token");
 
-  const handleDeleteItem = async() => {
+  const handleDeleteItem = async () => {
     console.log("delete item:", food);
     const reqHeader = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
-    const result = await deleteFoodItemApi(food._id,reqHeader)
-    if(result.status===201){
+    const result = await deleteFoodItemApi(food._id, reqHeader);
+    if (result.status === 201) {
       toast.success("item deleted succesfully");
       handleDeleteClose();
-      if (onDelete) onDelete(food._id)
-    }else{
-      toast.error("something went wrong")
-    }   
+      if (onDelete) onDelete(food._id);
+    } else {
+      toast.error("something went wrong");
+    }
   };
 
   return (
     <>
       <div>
-        <Card style={{ width: "16rem" }} className="foodcard shadow mt-3">
+        <Card style={{ width: "100%" }} className="foodcard shadow mt-3">
           <Card.Img
             variant="top"
             src={food.productImage}

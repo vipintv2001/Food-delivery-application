@@ -77,6 +77,12 @@ function Payment() {
     getUserDetails();
   }, []);
 
+  const cart = userDetails.cartSummary?.[0];
+  const subTotal = cart?.subTotal || 0;
+  const deliveryCharge = cart?.deliveryCharge || 0;
+  const quantity = cart?.quantity || 0;
+  const totalPrice = subTotal + deliveryCharge;
+
   return (
     <div className="container py-5" style={{ marginTop: "100px" }}>
       <div className="row justify-content-center g-4">
@@ -91,16 +97,14 @@ function Payment() {
             <h5 className="fw-bold text-primary mb-3">Order Summary</h5>
             {userDetails.cartSummary && userDetails.cartSummary[0] ? (
               <>
-                <h2 className="text-success fw-bold mb-3">
-                  {userDetails.cartSummary[0].totalPrice}
-                </h2>
+                <h2 className="text-success fw-bold mb-3">{totalPrice}</h2>
                 <hr />
 
                 <div className="d-flex justify-content-between mb-2">
                   <div>
                     <p className="mb-1 fw-semibold">Subtotal</p>
                     <small className="text-muted">
-                      {userDetails.cartSummary[0].quantity} items
+                      {quantity} items
                     </small>
                   </div>
                   <h6 className="text-dark fw-semibold">
@@ -118,9 +122,7 @@ function Payment() {
                 <hr />
                 <div className="d-flex justify-content-between">
                   <strong className="fs-5">Total Payable</strong>
-                  <strong className="fs-5 text-success">
-                    ₹{userDetails.cartSummary[0].totalPrice}
-                  </strong>
+                  <strong className="fs-5 text-success">₹{totalPrice}</strong>
                 </div>
               </>
             ) : (
@@ -238,10 +240,7 @@ function Payment() {
                 type="submit"
                 className="btn btn-success w-100 fw-bold fs-5 py-3 rounded-pill"
               >
-                Pay ₹
-                {userDetails.cartSummary && userDetails.cartSummary[0]
-                  ? userDetails.cartSummary[0].totalPrice
-                  : "0"}
+                Pay ₹{totalPrice}
               </button>
             </form>
           </div>

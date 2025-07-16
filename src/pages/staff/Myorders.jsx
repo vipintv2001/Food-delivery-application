@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 
 function Myorders() {
   const [orders, setOrders] = useState([]);
+  const [loading,setLoading]= useState(true)
 
   const token = sessionStorage.getItem("token");
   const reqHeader = {
@@ -18,9 +19,11 @@ function Myorders() {
   };
 
   const fetchMyOrder = async () => {
+    setLoading(true)
     const result = await getMyOrderApi(reqHeader);
     setOrders(result.data);
     console.log(result.data);
+    setLoading(false)
   };
 
   useEffect(() => {
@@ -155,13 +158,26 @@ function Myorders() {
     <div className="dashboard">
       <Staffsidebar />
       <div className="content staffcontent-bg">
-        <div className="container py-5" style={{ minHeight: "100vh" }}>
+        {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "300px" }}
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3 fw-semibold text-muted">
+                Loading, please wait...
+              </p>
+            </div>
+          ) :
+        (<div className="container py-5" style={{ minHeight: "100vh" }}>
           <h2 className="fw-bold mb-4 text-dark">📦 Claimed Orders</h2>
 
           {orders.length > 0 ? (
             <div className="row g-4">
               {orders.map((order) => (
-                <div className="col-12" key={order._id}>
+                <div className="col-sm-12 col-lg-10" key={order._id}>
                   <div
                     className="card border-0 shadow h-100 p-4"
                     style={{
@@ -324,7 +340,7 @@ function Myorders() {
               No claimed orders currently.
             </div>
           )}
-        </div>
+        </div>)}
       </div>
     </div>
   );

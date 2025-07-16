@@ -3,12 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import foodimg from "../assets/foodimg2.png";
 import { toast } from "react-toastify";
 import { getCartApi, loginUserApi } from "../services/allApi";
+import LoadingSpinner from "../components/LoginSpinner";
 
 function Login() {
   const [loginUser, setLoginUser] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -21,26 +23,26 @@ function Login() {
     };
     try {
       const result = await getCartApi(reqHeader);
-        const cart = result.data;
-        console.log("📦 Full cart API result:", result);
-        console.log("🛒 Cart fetched:", cart); 
+      const cart = result.data;
+      console.log("📦 Full cart API result:", result);
+      console.log("🛒 Cart fetched:", cart);
 
-        if (cart.length > 0) {
-          localStorage.setItem("selectedRestaurent", cart[0].restaurentId);
-        } else {
-          localStorage.removeItem("selectedRestaurent");
-        }
+      if (cart.length > 0) {
+        localStorage.setItem("selectedRestaurent", cart[0].restaurentId);
+      } else {
+        localStorage.removeItem("selectedRestaurent");
+      }
     } catch (err) {
       console.log("🚨 Failed to fetch user cart", err);
     }
   };
-  
 
   const handleLogin = async () => {
     const { email, password } = loginUser;
     if (!email || !password) {
       toast.warning("please fill the form completely");
     } else {
+      setLoading(true);
       const result = await loginUserApi(loginUser);
       if (result.status === 200) {
         sessionStorage.setItem(
@@ -48,34 +50,42 @@ function Login() {
           JSON.stringify(result.data.userData)
         );
         sessionStorage.setItem("token", result.data.jwt_token);
-        toast.success("login succesfully");
         console.log(result.data.userData.role);
         if (result.data.role === "user") {
           if (result.data.userData.role === "admin") {
             navigate("/admindashboard");
+            toast.success("login succesfully");
           } else {
             await fetchUserCart();
-            console.log("hello world")
+            console.log("hello world");
             navigate("/home");
+            toast.success("login succesfully");
           }
         } else if (result.data.role === "staff") {
           navigate("/staffdashboard");
+          toast.success("login succesfully");
         } else if (result.data.role === "restaurent") {
           navigate("/restaurentdashboard");
+          toast.success("login succesfully");
         } else {
           await fetchUserCart();
           navigate("/home");
+          toast.success("login succesfully");
         }
+        setLoading(false);
       } else if (result.status === 406) {
         toast.warning("invalid email or password");
+        setLoading(false)
       } else {
         toast.error("something went wrong");
-        console.log("result:",result.data)
+        console.log("result:", result.data);
+        setLoading(false)
       }
     }
   };
   return (
     <div className="container-fluid min-vh-100 d-flex flex-wrap">
+      {loading && <LoadingSpinner />}
       <div className="col-md-1"></div>
       <main
         className="col-lg-5 d-flex flex-column justify-content-center px-5 py-4"
@@ -120,22 +130,6 @@ function Login() {
             />
           </div>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <input
-                type="checkbox"
-                id="remember"
-                className="form-check-input me-1"
-              />
-              <label htmlFor="remember" className="form-check-label">
-                Remember Password
-              </label>
-            </div>
-            <Link to="/forgot" className="text-muted text-decoration-none">
-              Forgot Password?
-            </Link>
-          </div>
-
           <button
             className="btn btn-warning text-white fw-bold w-100 py-2"
             onClick={handleLogin}
@@ -151,15 +145,6 @@ function Login() {
           </p>
 
           <hr />
-          <h5 className="fw-bold text-center mb-3">Login With</h5>
-          <div className="d-flex gap-3 justify-content-center">
-            <button className="btn btn-danger d-flex align-items-center px-4">
-              <i className="bi bi-google me-2"></i> Google
-            </button>
-            <button className="btn btn-primary d-flex align-items-center px-4">
-              <i className="bi bi-facebook me-2"></i> Facebook
-            </button>
-          </div>
         </section>
 
         <footer className="mt-5 text-muted small ms-5">
@@ -168,7 +153,6 @@ function Login() {
         </footer>
       </main>
 
-      {/* Right Column - Image */}
       <div className="col-lg-6 d-none d-lg-block position-relative p-0">
         <img
           src={foodimg}

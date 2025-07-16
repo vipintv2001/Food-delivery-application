@@ -45,3 +45,9 @@ body {
   border-radius: 6px;
 }
 
+@media (min-width: 1200px) {
+  .col-lg-5th {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}

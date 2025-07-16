@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getReviewApi, submittReviewApi } from "../services/allApi";
 import { toast } from "react-toastify";
+import { addReviewResponseContext } from "../context/ContextShare";
 
 function RestaurentReview({ restaurentId }) {
   const [userReview, setUserReview] = useState({
@@ -20,6 +21,10 @@ function RestaurentReview({ restaurentId }) {
     }
   }, []);
 
+  const { addReviewResponse, setAddReviewResponse } = useContext(
+    addReviewResponseContext
+  );
+
   const fetchReview = async () => {
     const result = await getReviewApi(restaurentId);
     console.log("review:", result.data);
@@ -28,7 +33,7 @@ function RestaurentReview({ restaurentId }) {
 
   useEffect(() => {
     fetchReview();
-  }, []);
+  }, [addReviewResponse]);
 
   const handleRatingChange = (value) => {
     setUserReview({ ...userReview, rating: value });
@@ -64,7 +69,9 @@ function RestaurentReview({ restaurentId }) {
       if (userReview.name && userReview.feedback && userReview.rating > 0) {
         console.log("review", userReview);
         const result = await submittReviewApi(userReview, reqHeader);
+        setAddReviewResponse(result.data);
         toast.success("review Submitted");
+        setUserReview({ feedback: "", rating: 0 });
       } else {
         toast.warning("please fill all the field");
       }

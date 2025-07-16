@@ -1,16 +1,18 @@
 import React, { createContext, useState } from 'react'
 
-export const addOrderResponseContext = createContext()
+export const addReviewResponseContext = createContext()
 
 function ContextShare({children}) {
-    const [addOrderResponse,setAddOrderResponse] = useState({})
+    const [addReviewResponse,setAddReviewResponse] = useState({})
   return (
     <>
-    <addOrderResponseContext.Provider value={{addOrderResponse,setAddOrderResponse}}>
+      <addReviewResponseContext.Provider
+        value={{ addReviewResponse, setAddReviewResponse }}
+      >
         {children}
-    </addOrderResponseContext.Provider>
+      </addReviewResponseContext.Provider>
     </>
-  )
+  );
 }
 
 

@@ -32,7 +32,7 @@ function AdminRestaurentCard({ restaurent, onDelete }) {
   return (
     <>
       <div>
-        <Card style={{ width: "16rem" }} className="foodcard shadow mt-3">
+        <Card style={{ width: "100%" }} className="foodcard shadow mt-3">
           <Card.Img
             variant="top"
             src={`${baseUrl}/uploads/${restaurent.restaurentImage}`}

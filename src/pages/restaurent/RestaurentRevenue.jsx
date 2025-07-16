@@ -12,6 +12,7 @@ function RestaurentRevenue() {
   const [reportData, setReportData] = useState([]);
   const [ordersToday, setOrdersToday] = useState([]);
   const [ordersWeekly, setOrdersWeekly] = useState([]);
+  const [loading,setLoading] = useState(true)
 
   const dailyEarnings = ordersToday.reduce((sum, curr) => {
     const basePrice = curr.cartSummary[0].subTotal - curr.cartSummary[0].gst;
@@ -37,9 +38,11 @@ function RestaurentRevenue() {
   }, []);
 
   const fetchReport = async () => {
+    setLoading(true)
     try {
       const result = await getRestaurentOrderDetailsApi(reqHeader);
       setReportData(result.data);
+      setLoading(false)
     } catch (err) {
       console.error("Failed to fetch earnings report", err);
     }
@@ -78,6 +81,19 @@ function RestaurentRevenue() {
     <div className="dashboard">
       <RestaurentSidebar />
       <div className="content content-bg">
+        {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "300px" }}
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3 fw-semibold text-muted">
+                Loading, please wait...
+              </p>
+            </div>
+          ) :  (<div>
         {reportData ? (
           <div className="container py-4">
             <h2 className="fw-bold mb-4">Earnings Report</h2>
@@ -175,6 +191,7 @@ function RestaurentRevenue() {
         ) : (
           <P>Loading data</P>
         )}
+        </div>)}
       </div>
     </div>
   );

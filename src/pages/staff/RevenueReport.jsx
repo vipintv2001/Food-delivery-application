@@ -11,6 +11,7 @@ function StaffEarningsReport() {
   const [name, setName] = useState("");
   const [ordersToday, setOrdersToday] = useState([]);
   const [ordersWeekly, setOrdersWeekly] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const dailyEarnings = ordersToday.reduce(
     (sum, curr) => sum + curr.deliveryCharge * 0.7,
@@ -43,6 +44,7 @@ function StaffEarningsReport() {
   }, []);
 
   const fetchReport = async () => {
+    setLoading(true);
     try {
       const result = await getAllOrderApi(reqHeader);
       const finalResult = result.data;
@@ -50,6 +52,7 @@ function StaffEarningsReport() {
         (order) => order.deliveryBoy === name
       );
       setReportData(staffOrders);
+      setLoading(false);
     } catch (err) {
       console.error("Failed to fetch earnings report", err);
     }
@@ -87,78 +90,96 @@ function StaffEarningsReport() {
     <div className="dashboard">
       <Staffsidebar />
       <div className="content staffcontent-bg">
-        {reportData ? (
-          <div className="container py-4">
-            <h2 className="fw-bold mb-4">Earnings Report</h2>
-
-            <div className="row g-4 mb-4">
-              <div className="col-md-4">
-                <div className="card text-white bg-success shadow">
-                  <div className="card-body">
-                    <h5 className="card-title">Daily Earnings</h5>
-                    <h3>₹{dailyEarnings.toFixed(2)}</h3>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="card text-white bg-primary shadow">
-                  <div className="card-body">
-                    <h5 className="card-title">Weekly Earnings</h5>
-                    <h3>₹{weeklyEarnings.toFixed(2)}</h3>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="card text-white bg-dark shadow">
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      Deliveries Completed This Week
-                    </h5>
-                    <h3>{deliveries}</h3>
-                  </div>
-                </div>
-              </div>
+        {loading ? (
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ minHeight: "300px" }}
+          >
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
-            <div className="mt-4">
-              <p className="text-center fs-4 fw-bolder">Weekly Report</p>
-            </div>
-            {ordersWeekly.length > 0 ? (
-              <>
-                <div className="table-responsive">
-                  <Table striped bordered hover>
-                    <thead className="table-dark">
-                      <tr>
-                        <th>#</th>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Delivery Charge</th>
-                        <th>Your Share</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ordersWeekly.map((order, index) => (
-                        <tr key={order._id}>
-                          <td>{index + 1}</td>
-                          <td>{order._id.slice(-4)}</td>
-                          <td>
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </td>
-                          <td>₹{order.deliveryCharge}</td>
-                          <td>₹{(order.deliveryCharge * 0.7).toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
-              </>
-            ) : (
-              <p className="fs-6 text-center mt-4">
-                NO Orders Completed This Week
-              </p>
-            )}
+            <p className="mt-3 fw-semibold text-muted">
+              Loading, please wait...
+            </p>
           </div>
         ) : (
-          <P>Loading data</P>
+          <div>
+            {reportData ? (
+              <div className="container py-4">
+                <h2 className="fw-bold mb-4">Earnings Report</h2>
+
+                <div className="row g-4 mb-4">
+                  <div className="col-md-4">
+                    <div className="card text-white bg-success shadow">
+                      <div className="card-body">
+                        <h5 className="card-title">Daily Earnings</h5>
+                        <h3>₹{dailyEarnings.toFixed(2)}</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="card text-white bg-primary shadow">
+                      <div className="card-body">
+                        <h5 className="card-title">Weekly Earnings</h5>
+                        <h3>₹{weeklyEarnings.toFixed(2)}</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="card text-white bg-dark shadow">
+                      <div className="card-body">
+                        <h5 className="card-title">
+                          Deliveries Completed This Week
+                        </h5>
+                        <h3>{deliveries}</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <p className="text-center fs-4 fw-bolder">Weekly Report</p>
+                </div>
+                {ordersWeekly.length > 0 ? (
+                  <>
+                    <div className="table-responsive">
+                      <Table striped bordered hover>
+                        <thead className="table-dark">
+                          <tr>
+                            <th>#</th>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Delivery Charge</th>
+                            <th>Your Share</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ordersWeekly.map((order, index) => (
+                            <tr key={order._id}>
+                              <td>{index + 1}</td>
+                              <td>{order._id.slice(-4)}</td>
+                              <td>
+                                {new Date(order.createdAt).toLocaleDateString()}
+                              </td>
+                              <td>₹{order.deliveryCharge}</td>
+                              <td>
+                                ₹{(order.deliveryCharge * 0.7).toFixed(2)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </>
+                ) : (
+                  <p className="fs-6 text-center mt-4">
+                    NO Orders Completed This Week
+                  </p>
+                )}
+              </div>
+            ) : (
+              <P>Loading data</P>
+            )}
+          </div>
         )}
       </div>
     </div>

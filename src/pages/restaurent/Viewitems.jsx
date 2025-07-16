@@ -13,6 +13,7 @@ function Viewitems() {
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [foodItems, setFoodItems] = useState([]);
+  const [loading,setLoading] = useState(true)
 
   const handleEditClose = () => setShowEdit(false);
   const handleEditShow = () => setShowEdit(true);
@@ -24,9 +25,11 @@ function Viewitems() {
 
   useEffect(() => {
     const getFoodDetails = async () => {
+      setLoading(true)
       const result = await getFoodMenuApi(restaurentId);
       setFoodItems(result.data);
       console.log("foods:", result.data);
+      setLoading(false)
     };
     getFoodDetails();
   }, []);
@@ -40,7 +43,19 @@ function Viewitems() {
       <div className="dashboard">
         <RestaurentSidebar />
         <div className="content content-bg">
-          <div className="container-fluid">
+          {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "300px" }}
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3 fw-semibold text-muted">
+                Loading, please wait...
+              </p>
+            </div>
+          ) : (<div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center">
               <h3 className="my-4 fw-bolder">Food Items</h3>
               <div className="input-icon-wrapper">
@@ -55,7 +70,7 @@ function Viewitems() {
             <div className="container-fluid">
               <div className="row">
                 {foodItems.map((item) => (
-                  <div className="col custom-col p-3">
+                  <div className="col-lg-5th col-sm-12 col-md-4 p-3">
                     <Adminfoodcard food={item} onDelete={(deletedId)=>{
                       setFoodItems(prev=>prev.filter(food=>food._id !== deletedId))
                     }} />
@@ -63,7 +78,7 @@ function Viewitems() {
                 ))}
               </div>
             </div>
-          </div>
+          </div>)}
         </div>
       </div>
       

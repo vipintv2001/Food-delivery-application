@@ -6,6 +6,7 @@ import { getRestaurentOrderDetailsApi } from "../../services/allApi";
 function Trackorder() {
   const [complete, setComplete] = useState(false);
   const [orderDetails, setOrderDeatails] = useState([]);
+  const [loading,setLoading] = useState(true)
 
   const handleStatus = () => setComplete(!complete);
 
@@ -18,9 +19,11 @@ function Trackorder() {
       Authorization: `Bearer ${token}`,
     };
     const getOrderDetails = async () => {
+      setLoading(true)
       const orders = await getRestaurentOrderDetailsApi(reqHeader);
       console.log("orderDetails:", orders.data);
       setOrderDeatails(orders.data);
+      setLoading(false)
     };
     getOrderDetails();
   }, []);
@@ -29,7 +32,19 @@ function Trackorder() {
     <div className="dashboard">
       <RestaurentSidebar />
       <div className="content content-bg">
-        <div className="container-fluid">
+        {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "300px" }}
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3 fw-semibold text-muted">
+                Loading, please wait...
+              </p>
+            </div>
+          ) : (<div className="container-fluid">
           <div className="container mt-5">
             <h3 className="text-center fw-bolder mb-4">ORDERS</h3>
 
@@ -173,7 +188,7 @@ function Trackorder() {
               </table>
             </div>
           </div>
-        </div>
+        </div>)}
       </div>
     </div>
   );

@@ -111,14 +111,14 @@ function Header() {
                   </button>
 
                   <ul className="dropdown-menu dropdown-menu-end shadow">
-                    <li>
+                    {/* <li>
                       <Link
                         className="dropdown-item d-flex align-items-center gap-2"
                         to="/profile"
                       >
                         <i className="bi bi-person-circle"></i> Profile
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <button
                         className="dropdown-item d-flex align-items-center gap-2 text-danger"

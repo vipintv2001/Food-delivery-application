@@ -182,13 +182,16 @@ function Address() {
               <label className="form-label fw-semibold">
                 Delivery Location
               </label>
-              <AddressSelector
-                onSelect={handleAddressSelect}
-                restaurantLocation={[
-                  restaurant.lattitude,
-                  restaurant.longitude,
-                ]}
-              />
+              {restaurant?.lattitude !== undefined &&
+                restaurant?.longitude !== undefined && (
+                  <AddressSelector
+                    onSelect={handleAddressSelect}
+                    restaurantLocation={[
+                      restaurant.lattitude,
+                      restaurant.longitude,
+                    ]}
+                  />
+                )}
               <form className="p-3">
                 <div className="mb-4">
                   <h6 className="fw-semibold text-secondary mb-3">

@@ -10,7 +10,7 @@ function Profile() {
         style={{ minHeight: "100vh" }}
       >
         <Row className="justify-content-center">
-          <Col lg={10}>
+          <Col lg={8}>
             <Card className="p-5 shadow-lg border-0 rounded-5">
               <div className="d-flex flex-column flex-md-row align-items-start justify-content-between mb-4">
                 <div>
@@ -49,57 +49,6 @@ function Profile() {
               </Row>
 
               <hr />
-
-              <h4 className="fw-bold mb-3">Order History</h4>
-              <div className="table-responsive">
-                <table className="table table-hover align-middle">
-                  <thead className="table-light">
-                    <tr>
-                      <th>Item</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <i className="fas fa-hamburger text-warning me-2"></i>
-                        Cheese Burger
-                      </td>
-                      <td>April 10, 2025</td>
-                      <td>
-                        <span className="badge bg-success">Delivered</span>
-                      </td>
-                      <td>₹120</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <i className="fas fa-drumstick-bite text-danger me-2"></i>
-                        Chicken Biryani
-                      </td>
-                      <td>April 18, 2025</td>
-                      <td>
-                        <span className="badge bg-warning text-dark">
-                          On the way
-                        </span>
-                      </td>
-                      <td>₹180</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <i className="fas fa-leaf text-success me-2"></i>
-                        Veg Thali
-                      </td>
-                      <td>April 20, 2025</td>
-                      <td>
-                        <span className="badge bg-secondary">Cancelled</span>
-                      </td>
-                      <td>₹100</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </Card>
           </Col>
         </Row>

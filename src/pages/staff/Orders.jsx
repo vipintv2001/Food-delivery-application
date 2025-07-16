@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [onDuty,setOnDuty] = useState(false)
+  const [loading,setLoading]= useState(true)
 
   useEffect(() => {
     const tooltipTriggerList = document.querySelectorAll(
@@ -31,9 +32,11 @@ function Orders() {
   };
 
   const getOrderDetails = async () => {
+    setLoading(true)
     const orders = await getAllOrderApi(reqHeader);
     console.log("orderDetails:", orders.data);
     setOrders(orders.data);
+    setLoading(false)
   };
 
   useEffect(() => {
@@ -61,7 +64,20 @@ function Orders() {
     <div className="dashboard">
       <Staffsidebar />
       <div className="content staffcontent-bg">
-        <div className="container py-4" style={{ minHeight: "100vh" }}>
+        {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "300px" }}
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3 fw-semibold text-muted">
+                Loading, please wait...
+              </p>
+            </div>
+          ) :
+        (<div className="container py-4" style={{ minHeight: "100vh" }}>
           <h2 className="mb-4 fw-bold text-center">Unclaimed Orders</h2>
 
           {orders.filter(
@@ -143,7 +159,7 @@ function Orders() {
               </table>
             </div>
           )}
-        </div>
+        </div>)}
       </div>
     </div>
   );

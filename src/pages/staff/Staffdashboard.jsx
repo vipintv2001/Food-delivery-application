@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import "./Staff.css";
 import { getAllOrderApi, setWorkStatusApi } from "../../services/allApi";
 import { toast } from "react-toastify";
+import LoadingSpinner from "../../components/LoginSpinner";
 
 function Staffdashboard() {
   const [onDuty, setOnDuty] = useState(false);
@@ -14,6 +15,7 @@ function Staffdashboard() {
   const [deliverisToday, setDeliveriesToday] = useState(0);
   const [ordersToday, setordersToday] = useState([]);
   const [ordersWeekly, setOrdersWeekly] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const token = sessionStorage.getItem("token");
   const reqHeader = {
@@ -40,6 +42,7 @@ function Staffdashboard() {
   }, []);
 
   const getDetails = async () => {
+    setLoading(true);
     const ordersData = await getAllOrderApi(reqHeader);
     const allOrders = ordersData.data;
     const liveOrders = allOrders.filter(
@@ -87,6 +90,7 @@ function Staffdashboard() {
       (order) => order.deliveryStatus !== "cancelled"
     );
     setOrdersWeekly(validCurrentWeekOrder);
+    setLoading(false);
   };
   useEffect(() => {
     if (name) {
@@ -161,6 +165,7 @@ function Staffdashboard() {
     <div className="dashboard d-flex flex-column flex-lg-row">
       <Staffsidebar />
       <div className="content staffcontent-bg w-100">
+        {loading && <LoadingSpinner />}
         <div
           className="container-fluid p-3 p-md-4"
           style={{ minHeight: "100vh" }}

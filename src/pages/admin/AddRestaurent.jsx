@@ -5,8 +5,10 @@ import AddressSelector from "../../components/AddressSelector";
 import RestaurentAddress from "../../components/RestaurentAddress";
 import { toast } from "react-toastify";
 import { addRestaurentApi } from "../../services/allApi";
+import LoadingSpinner from "../../components/LoginSpinner";
 
 function AddRestaurent() {
+  const [loading, setLoading] = useState(false);
   const [restaurentDetails, setRestaurentDetails] = useState({
     name: "",
     resImage: "",
@@ -79,6 +81,7 @@ function AddRestaurent() {
     ) {
       toast.warning("Please fill the form completely");
     } else {
+      setLoading(true);
       const reqBody = new FormData();
       reqBody.append("name", name);
       reqBody.append("resImage", resImage);
@@ -99,7 +102,9 @@ function AddRestaurent() {
       };
 
       const result = await addRestaurentApi(reqBody, reqHeader);
+      
       if (result.status === 201) {
+        setLoading(false);
         toast.success("Restaurent Added Successfully");
         setRestaurentDetails({
           name: "",
@@ -116,8 +121,10 @@ function AddRestaurent() {
           email: "",
         });
       } else if (result.status === 409) {
+        setLoading(false);
         toast.warning("restaurent already exists");
       } else {
+        setLoading(false);
         toast.error("something went wrong");
       }
     }
@@ -127,8 +134,8 @@ function AddRestaurent() {
     <div className="dashboard">
       <Sidebar />
       <div className="content content-bg container-fluid">
+        {loading && <LoadingSpinner />}
         <h2 className="text-center fw-bold my-4">Add New Restaurent</h2>
-
         <div className="d-flex justify-content-center">
           <div className="card shadow p-4 w-100" style={{ maxWidth: "600px" }}>
             <form>
@@ -225,7 +232,7 @@ function AddRestaurent() {
                     "Mexican",
                     "Arabian",
                     "MultiCuisine",
-                    "Fast Food",
+                    "fast food",
                     "Bakery",
                     "Cafe",
                   ].map((category, index) => (

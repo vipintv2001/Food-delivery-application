@@ -8,6 +8,7 @@ import {
   getStaffDetailsApi,
 } from "../../services/allApi";
 import AdminReport from "./AdminReport";
+import LoadingSpinner from "../../components/LoginSpinner";
 
 function Admindashboard() {
   const token = sessionStorage.getItem("token");
@@ -19,6 +20,7 @@ function Admindashboard() {
   const [orderToday, setOrderToday] = useState(0);
   const [currentDayRevenue, setCurrentDayRevenue] = useState(0);
   const [AlltodaysOrder, setAllTodayOrder] = useState([]);
+  const [loading,setLoading] = useState(true)
 
   const reqHeader = {
     "Content-Type": "application/json",
@@ -28,8 +30,9 @@ function Admindashboard() {
   useEffect(() => {
     const getDetails = async () => {
       try {
-        const customersData = await getCustomerDetailsApi();
-        const staffsData = await getStaffDetailsApi();
+        setLoading(true)
+        const customersData = await getCustomerDetailsApi("");
+        const staffsData = await getStaffDetailsApi("");
         const restaurentsData = await getRestaurentApi();
         const ordersData = await getAllOrderApi(reqHeader);
         setCustomers(customersData.data.length);
@@ -55,9 +58,9 @@ function Admindashboard() {
           const todayDate = new Date().toISOString().split("T")[0];
           return orderDate === todayDate;
         });
-        const validOrders = todaysOrder.filter((order)=>(
-          order.deliveryStatus!=="cancelled"
-        ))
+        const validOrders = todaysOrder.filter(
+          (order) => order.deliveryStatus !== "cancelled"
+        );
 
         setOrderToday(validOrders.length);
         setAllTodayOrder(validOrders);
@@ -66,8 +69,10 @@ function Admindashboard() {
           return acc + curr.totalPrice;
         }, 0);
         setCurrentDayRevenue(todaysRevenue);
+        setLoading(false)
       } catch (error) {
         console.log("error fetching data");
+        setLoading(false)
       }
     };
     getDetails();
@@ -78,6 +83,7 @@ function Admindashboard() {
       <div className="dashboard">
         <Sidebar />
         <div className="content content-bg">
+          {loading && <LoadingSpinner />}
           <div className="container-fluid p-4 min-vh-100">
             <div className="row">
               <div className="col-12">

@@ -27,12 +27,10 @@ function Home() {
       if (target) {
         setTimeout(() => {
           target.scrollIntoView({ behavior: "smooth" });
-        }, 100); // small delay ensures DOM is ready
+        }, 100);
       }
     }
   }, [location]);
-
-
 
   return (
     <>

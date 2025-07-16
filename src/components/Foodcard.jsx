@@ -113,7 +113,10 @@ function Foodcard({ foodItem }) {
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
     >
-      <Card style={{ width: "26rem" }} className="shadow mt-3 mb-3 foodcard">
+      <Card
+        className="shadow mt-3 mb-3 foodcard w-100"
+        style={{ maxWidth: "26rem", margin: "0 auto" }}
+      >
         <div className="image-container position-relative">
           <Card.Img
             variant="top"

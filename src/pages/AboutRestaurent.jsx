@@ -11,12 +11,15 @@ function AboutRestaurant() {
   const { id } = useParams();
   console.log(id);
   const [restaurant, setRestaurent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const getAboutRestaurent = async () => {
+    setLoading(true);
     const result = await getAboutRestaurentApi(id);
     setRestaurent(result.data);
     console.log("data:", result.data);
     console.log("restaurent Name:", result.data.restaurantName);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -27,6 +30,13 @@ function AboutRestaurant() {
     <>
       <div className="container-fluid bg-light min-vh-100">
         <Header />
+        {loading ? (
+  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "300px" }}>
+    <div className="spinner-border text-primary" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  </div>
+) : (<>
         <div className="container-fluid py-5" style={{ marginTop: "120px" }}>
           {!restaurant ? (
             <div className="text-center">
@@ -35,14 +45,19 @@ function AboutRestaurant() {
           ) : (
             <div className="row align-items-center">
               <div className="col-md-1"></div>
-              <div className="col-md-5 mb-4">
+              <div className="col-md-5 mb-4 text-center">
                 <img
                   src={`${baseUrl}/uploads/${restaurant.restaurentImage}`}
                   alt="Restaurant"
                   className="img-fluid rounded-4 shadow"
-                  style={{ maxHeight: "500px", objectFit: "cover" }}
+                  style={{
+                    maxHeight: "500px",
+                    objectFit: "cover",
+                    maxWidth: "100%",
+                  }}
                 />
               </div>
+
               <div className="col-md-5">
                 <h1 className="fw-bold display-4 text-dark mb-3">
                   {restaurant.restaurentName}
@@ -74,8 +89,10 @@ function AboutRestaurant() {
           </h2>
           <Foodsection />
         </div>
+        <RestaurentReview restaurentId={id} />
+        </>)}
       </div>
-      <RestaurentReview restaurentId={id} />
+
       <Footer />
     </>
   );

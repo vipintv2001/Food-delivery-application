@@ -76,16 +76,16 @@ export const addRestaurentApi = async (reqBody,reqHeader) => {
   return await commonApi("POST", `${baseUrl}/admin/addrestaurent`, reqBody, reqHeader);
 };
 //get customer details
-export const getCustomerDetailsApi = async () => {
-  return await commonApi("GET", `${baseUrl}/admin/getCustomer`, "", "");
+export const getCustomerDetailsApi = async (searchKey) => {
+  return await commonApi("GET", `${baseUrl}/admin/getCustomer?search=${searchKey}`, "", "");
 };
 //add new staff
 export const addNewStaffApi = async (reqBody) => {
   return await commonApi("POST", `${baseUrl}/admin/addstaff`, reqBody, "");
 };
 //get staff details
-export const getStaffDetailsApi = async () => {
-  return await commonApi("GET", `${baseUrl}/admin/getstaff`, "", "");
+export const getStaffDetailsApi = async (searchKey) => {
+  return await commonApi("GET",`${baseUrl}/admin/getstaff?search=${searchKey}`,"","");
 };
 //delete restaurent
 export const deleteRestaurentApi = async (id,reqHeader)=>{

@@ -4,6 +4,7 @@ import { getRestaurentOrderDetailsApi } from "../../services/allApi";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import RestaurentReport from "./RestaurentReport";
+import LoadingSpinner from "../../components/LoginSpinner";
 
 function RestaurentDashboard() {
   const [restaurentName, setRestaurentName] = useState("");
@@ -13,6 +14,7 @@ function RestaurentDashboard() {
   const [completedOrders, setCompletedOrders] = useState(0);
   const [todaysRevenue, setTodaysRevenue] = useState(0);
   const token = sessionStorage.getItem("token");
+  const [loading, setLoading] = useState(true);
 
   const reqHeader = {
     "Content-Type": "application/json",
@@ -28,6 +30,7 @@ function RestaurentDashboard() {
   });
 
   const getDetails = async () => {
+    setLoading(true);
     const restaurentOrders = await getRestaurentOrderDetailsApi(reqHeader);
     const currentDayOrders = restaurentOrders.data.filter((order) => {
       const orderDate = new Date(order.createdAt).toISOString().split("T")[0];
@@ -55,6 +58,7 @@ function RestaurentDashboard() {
         }, 0)
       : 0;
     setTodaysRevenue(totalRevenue);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -66,6 +70,7 @@ function RestaurentDashboard() {
       <div className="dashboard">
         <RestaurentSidebar />
         <div className="content staffcontent-bg">
+          {loading && <LoadingSpinner />}
           <div
             className="container-fluid p-4"
             style={{
