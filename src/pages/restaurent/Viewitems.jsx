@@ -13,7 +13,7 @@ function Viewitems() {
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [foodItems, setFoodItems] = useState([]);
-  const [loading,setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   const handleEditClose = () => setShowEdit(false);
   const handleEditShow = () => setShowEdit(true);
@@ -25,18 +25,16 @@ function Viewitems() {
 
   useEffect(() => {
     const getFoodDetails = async () => {
-      setLoading(true)
+      setLoading(true);
       const result = await getFoodMenuApi(restaurentId);
       setFoodItems(result.data);
       console.log("foods:", result.data);
-      setLoading(false)
+      setLoading(false);
     };
     getFoodDetails();
   }, []);
 
-  const handleDeleteItem = ()=>{
-
-  }
+  const handleDeleteItem = () => {};
 
   return (
     <>
@@ -55,33 +53,40 @@ function Viewitems() {
                 Loading, please wait...
               </p>
             </div>
-          ) : (<div className="container-fluid">
-            <div className="d-flex justify-content-between align-items-center">
-              <h3 className="my-4 fw-bolder">Food Items</h3>
-              <div className="input-icon-wrapper">
-                <i class="fa-solid fa-magnifying-glass icon"></i>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search"
-                />
-              </div>
-            </div>
+          ) : (
             <div className="container-fluid">
-              <div className="row">
-                {foodItems.map((item) => (
-                  <div className="col-lg-5th col-sm-12 col-md-4 p-3">
-                    <Adminfoodcard food={item} onDelete={(deletedId)=>{
-                      setFoodItems(prev=>prev.filter(food=>food._id !== deletedId))
-                    }} />
-                  </div>
-                ))}
+              <div className="d-flex justify-content-between align-items-center">
+                <h3 className="my-4 fw-bolder">Food Items</h3>
+                <div className="input-icon-wrapper">
+                  <i class="fa-solid fa-magnifying-glass icon"></i>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search"
+                  />
+                </div>
+              </div>
+              <div className="container-fluid">
+                <div className="row">
+                  {foodItems.map((item) => (
+                    <div className="col-lg-3 col-sm-12 col-md-4 p-3">
+                      <Adminfoodcard
+                        food={item}
+                        onDelete={(deletedId) => {
+                          setFoodItems((prev) =>
+                            prev.filter((food) => food._id !== deletedId)
+                          );
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>)}
+          )}
         </div>
       </div>
-      
+
       <Editfooditem show={showEdit} handleClose={handleEditClose} />
     </>
   );

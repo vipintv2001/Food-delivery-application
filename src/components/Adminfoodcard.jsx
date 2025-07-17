@@ -34,7 +34,7 @@ function Adminfoodcard({ food, onDelete }) {
   return (
     <>
       <div>
-        <Card style={{ width: "100%" }} className="foodcard shadow mt-3">
+        <Card style={{ width: "80%" }} className="foodcard shadow mt-3">
           <Card.Img
             variant="top"
             src={food.productImage}

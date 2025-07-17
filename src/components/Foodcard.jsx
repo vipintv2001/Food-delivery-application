@@ -115,7 +115,7 @@ function Foodcard({ foodItem }) {
     >
       <Card
         className="shadow mt-3 mb-3 foodcard w-100"
-        style={{ maxWidth: "26rem", margin: "0 auto" }}
+        style={{  width: "100%", height: "420px", margin: "0 auto" }}
       >
         <div className="image-container position-relative">
           <Card.Img
