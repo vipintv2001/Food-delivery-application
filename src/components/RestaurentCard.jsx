@@ -9,7 +9,7 @@ function RestaurentCard({ restaurent }) {
     <Card
       className="shadow-lg border-0 mt-4 foodcard"
       style={{
-        width: "26rem",
+        width: "100%",
         height: "420px",
         borderRadius: "1rem",
         backgroundColor: "#f2f2f2",
@@ -31,17 +31,6 @@ function RestaurentCard({ restaurent }) {
             <Card.Title className="fs-5 fw-bold text-dark mb-0">
               {restaurent.restaurentName}
             </Card.Title>
-            <div>
-              {[...Array(5)].map((_, i) => (
-                <i
-                  key={i}
-                  className={`fa-star fa-solid ${
-                    i < rating ? "text-warning" : "text-muted"
-                  }`}
-                  style={{ fontSize: "0.85rem", marginLeft: "1px" }}
-                ></i>
-              ))}
-            </div>
           </div>
           <Card.Text className="text-secondary" style={{ fontSize: "0.9rem" }}>
             {/* Authentic Indian, Arabian, and Chinese dishes served fresh and hot. */}

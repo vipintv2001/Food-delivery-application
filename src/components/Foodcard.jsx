@@ -115,7 +115,7 @@ function Foodcard({ foodItem }) {
     >
       <Card
         className="shadow mt-3 mb-3 foodcard w-100"
-        style={{  width: "100%", height: "420px", margin: "0 auto" }}
+        style={{ width: "100%", height: "420px", margin: "0 auto" }}
       >
         <div className="image-container position-relative">
           <Card.Img
@@ -137,20 +137,15 @@ function Foodcard({ foodItem }) {
         </div>
         <Card.Body>
           <div className="d-flex justify-content-between">
-            <Card.Title className="fs-4 fw-bolder">
+            <Card.Title className="fs-5 fw-bolder">
               {foodItem.productName}
             </Card.Title>
-            <h4>
-              {[...Array(5)].map((_, i) => (
-                <i key={i} className="fa-solid fa-star text-warning"></i>
-              ))}
-            </h4>
           </div>
           <Card.Text className="foodcard-description">
             {foodItem.description}
           </Card.Text>
           <div>
-            <h4 className="fw-bolder" style={{ fontFamily: "Poppins" }}>
+            <h4 className="fw-bold" style={{ fontFamily: "Poppins" }}>
               ₹{discountedPrice}{" "}
               {discount > 0 && (
                 <span

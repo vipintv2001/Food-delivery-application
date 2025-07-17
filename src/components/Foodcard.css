@@ -47,7 +47,7 @@
 }
 
 .foodcard-description {
-  height: 3.6em; /* Adjust based on how many lines you want (e.g., 2 lines) */
+  height: 3.6em;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
